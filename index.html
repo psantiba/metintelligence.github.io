@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TuEmpresa — Tecnología & Química para Minería</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0A0C0F;
+  --bg2:#111418;
+  --bg3:#1A1F28;
+  --card:#1E2530;
+  --card2:#242C38;
+  --gold:#F0A500;
+  --gold2:#FFB829;
+  --gold-dim:#F0A50022;
+  --text:#E8EDF5;
+  --text2:#8B9BB4;
+  --text3:#4A5568;
+  --border:#2A3445;
+  --radius:12px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:16px;line-height:1.6;overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,12,15,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 5%}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.25rem;color:var(--text);letter-spacing:-0.5px}
+.logo span{color:var(--gold)}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:0.875rem;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--gold)}
+.nav-cta{background:var(--gold);color:#0A0C0F;padding:0.45rem 1.1rem;border-radius:6px;font-size:0.875rem;font-weight:600;text-decoration:none;transition:background .2s}
+.nav-cta:hover{background:var(--gold2)}
+
+/* HERO */
+#inicio{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:120px 5% 80px;position:relative;overflow:hidden}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:60px 60px;opacity:0.25}
+.hero-glow{position:absolute;top:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(240,165,0,0.08) 0%,transparent 65%);pointer-events:none}
+.hero-inner{max-width:1200px;margin:0 auto;position:relative;z-index:1}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--gold-dim);border:1px solid rgba(240,165,0,0.3);color:var(--gold);padding:0.3rem 0.9rem;border-radius:20px;font-size:0.75rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:2rem}
+.pulse{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.3)}}
+h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:700;line-height:1.1;letter-spacing:-1.5px;margin-bottom:1.5rem;max-width:800px}
+h1 em{font-style:normal;color:var(--gold)}
+.hero-sub{font-size:1.1rem;color:var(--text2);max-width:560px;margin-bottom:3rem;line-height:1.7}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:4rem}
+.btn-primary{background:var(--gold);color:#0A0C0F;padding:0.85rem 1.8rem;border-radius:8px;font-weight:700;font-size:0.95rem;text-decoration:none;transition:background .2s,transform .15s}
+.btn-primary:hover{background:var(--gold2);transform:translateY(-1px)}
+.btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border);padding:0.85rem 1.8rem;border-radius:8px;font-weight:500;font-size:0.95rem;text-decoration:none;transition:border-color .2s,color .2s}
+.btn-secondary:hover{border-color:var(--gold);color:var(--gold)}
+
+/* LIVE METRICS */
+.metrics-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.metric{background:var(--bg2);padding:1.25rem 1.5rem}
+.metric-label{font-size:0.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.4rem}
+.metric-value{font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:700;color:var(--text);letter-spacing:-0.5px}
+.metric-value span{font-size:0.8rem;color:var(--gold);font-weight:500;margin-left:4px}
+
+/* SECTIONS */
+section{padding:100px 5%}
+.section-inner{max-width:1200px;margin:0 auto}
+.section-eyebrow{font-size:0.7rem;color:var(--gold);text-transform:uppercase;letter-spacing:2px;font-weight:600;margin-bottom:0.75rem}
+h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,3.5vw,2.75rem);font-weight:700;letter-spacing:-1px;line-height:1.15;margin-bottom:1.25rem}
+.section-lead{color:var(--text2);font-size:1.05rem;max-width:600px;margin-bottom:3.5rem;line-height:1.7}
+
+/* SERVICIOS */
+#servicios{background:var(--bg2)}
+.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
+.service-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;transition:border-color .2s,transform .2s;cursor:default}
+.service-card:hover{border-color:rgba(240,165,0,0.4);transform:translateY(-3px)}
+.service-icon{width:48px;height:48px;background:var(--gold-dim);border:1px solid rgba(240,165,0,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;font-size:1.3rem}
+.service-card h3{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:600;margin-bottom:0.6rem;color:var(--text)}
+.service-card p{font-size:0.9rem;color:var(--text2);line-height:1.6}
+.service-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:1.25rem}
+.tag{background:var(--bg3);border:1px solid var(--border);color:var(--text3);font-size:0.7rem;padding:3px 10px;border-radius:20px;letter-spacing:0.5px}
+
+/* GALERIA */
+#galeria{background:var(--bg)}
+.gallery-tabs{display:flex;gap:0.5rem;margin-bottom:2.5rem;flex-wrap:wrap}
+.gtab{background:transparent;border:1px solid var(--border);color:var(--text2);padding:0.5rem 1.1rem;border-radius:6px;font-size:0.85rem;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
+.gtab.active,.gtab:hover{background:var(--gold-dim);border-color:rgba(240,165,0,0.4);color:var(--gold)}
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem}
+.gallery-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:transform .2s,border-color .2s;cursor:pointer}
+.gallery-item:hover{transform:translateY(-3px);border-color:rgba(240,165,0,0.35)}
+.gallery-img{width:100%;aspect-ratio:16/10;background:var(--bg3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;position:relative;overflow:hidden}
+.gallery-img::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--bg3) 0%,var(--card2) 100%)}
+.gallery-img-icon{position:relative;z-index:1;font-size:2rem;opacity:0.3}
+.gallery-img-label{position:relative;z-index:1;font-size:0.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px}
+.gallery-info{padding:1rem 1.25rem}
+.gallery-info h4{font-family:'Space Grotesk',sans-serif;font-size:0.95rem;font-weight:600;margin-bottom:0.3rem}
+.gallery-info p{font-size:0.8rem;color:var(--text2);line-height:1.5}
+
+/* DEMO */
+#demo{background:var(--bg2)}
+.demo-container{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.demo-topbar{background:var(--bg);padding:0.75rem 1.25rem;display:flex;align-items:center;gap:0.5rem;border-bottom:1px solid var(--border)}
+.demo-dot{width:10px;height:10px;border-radius:50%}
+.demo-url{background:var(--bg2);border:1px solid var(--border);border-radius:5px;padding:0.3rem 0.8rem;font-size:0.75rem;color:var(--text3);margin-left:0.5rem;flex:1;max-width:300px}
+.demo-body{display:grid;grid-template-columns:200px 1fr;min-height:420px}
+.demo-sidebar{background:var(--bg);border-right:1px solid var(--border);padding:1.25rem 0}
+.demo-nav-item{padding:0.6rem 1.25rem;font-size:0.8rem;color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:0.6rem;transition:background .15s}
+.demo-nav-item:hover,.demo-nav-item.active{background:var(--gold-dim);color:var(--gold)}
+.demo-nav-item.active{border-right:2px solid var(--gold)}
+.demo-content{padding:1.5rem;background:var(--bg2)}
+.demo-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
+.demo-title{font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:600}
+.demo-badge{background:rgba(34,197,94,0.15);color:#22c55e;font-size:0.7rem;padding:3px 10px;border-radius:20px;font-weight:500}
+.demo-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1rem}
+.demo-kpi{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:0.85rem 1rem}
+.demo-kpi-label{font-size:0.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.25rem}
+.demo-kpi-val{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:700}
+.demo-chart{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1rem;height:150px;display:flex;align-items:flex-end;gap:4px;overflow:hidden}
+.bar{background:var(--gold);border-radius:3px 3px 0 0;flex:1;opacity:0.8;transition:height .3s}
+
+/* QUIENES */
+#quienes{background:var(--bg)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
+.about-stats{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-top:2.5rem}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem}
+.stat-num{font-family:'Space Grotesk',sans-serif;font-size:2.25rem;font-weight:700;color:var(--gold);letter-spacing:-1px}
+.stat-desc{font-size:0.85rem;color:var(--text2);margin-top:0.25rem}
+.team-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.team-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;display:flex;align-items:center;gap:1rem}
+.team-avatar{width:48px;height:48px;border-radius:50%;background:var(--bg3);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.team-name{font-family:'Space Grotesk',sans-serif;font-size:0.9rem;font-weight:600}
+.team-role{font-size:0.75rem;color:var(--text2)}
+
+/* CONTACTO */
+#contacto{background:var(--bg2)}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
+.contact-info{display:flex;flex-direction:column;gap:1.5rem;margin-top:2rem}
+.contact-item{display:flex;align-items:flex-start;gap:1rem}
+.contact-icon{width:40px;height:40px;background:var(--gold-dim);border:1px solid rgba(240,165,0,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.contact-label{font-size:0.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.2rem}
+.contact-val{font-size:0.95rem;color:var(--text)}
+.form-group{margin-bottom:1.25rem}
+.form-group label{display:block;font-size:0.8rem;color:var(--text2);margin-bottom:0.5rem;font-weight:500}
+.form-group input,.form-group textarea,.form-group select{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:0.75rem 1rem;border-radius:8px;font-family:'Inter',sans-serif;font-size:0.9rem;outline:none;transition:border-color .2s}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:rgba(240,165,0,0.5)}
+.form-group select{appearance:none;cursor:pointer}
+.form-group textarea{resize:vertical;min-height:120px}
+.btn-submit{width:100%;background:var(--gold);color:#0A0C0F;border:none;padding:0.9rem;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s}
+.btn-submit:hover{background:var(--gold2)}
+
+/* FOOTER */
+footer{background:var(--bg);border-top:1px solid var(--border);padding:2.5rem 5%}
+.footer-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.footer-copy{font-size:0.8rem;color:var(--text3)}
+.footer-links{display:flex;gap:1.5rem}
+.footer-links a{font-size:0.8rem;color:var(--text3);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--gold)}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:0 5%}
+
+@media(max-width:768px){
+  .about-grid,.contact-grid{grid-template-columns:1fr}
+  .demo-body{grid-template-columns:1fr}
+  .demo-sidebar{display:none}
+  .nav-links{display:none}
+  .team-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo">TU<span>EMPRESA</span></div>
+    <ul class="nav-links">
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#galeria">Casos de uso</a></li>
+      <li><a href="#demo">Demo</a></li>
+      <li><a href="#quienes">Nosotros</a></li>
+    </ul>
+    <a href="#contacto" class="nav-cta">Contactar</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="inicio">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">
+      <div class="pulse"></div>
+      Tecnología aplicada a la industria
+    </div>
+    <h1>Datos, química y software<br>para la <em>minería moderna</em></h1>
+    <p class="hero-sub">Automatizamos el control de calidad analítico, gestión de muestras y visualización de datos operacionales para laboratorios y operaciones mineras en Chile.</p>
+    <div class="hero-btns">
+      <a href="#galeria" class="btn-primary">Ver casos de uso</a>
+      <a href="#contacto" class="btn-secondary">Hablar con nosotros</a>
+    </div>
+    <div class="metrics-bar">
+      <div class="metric">
+        <div class="metric-label">Análisis procesados</div>
+        <div class="metric-value" id="m1">0 <span>↑</span></div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Reducción de errores</div>
+        <div class="metric-value" id="m2">0% <span>↑</span></div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Laboratorios activos</div>
+        <div class="metric-value" id="m3">0 <span>↑</span></div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Años en minería</div>
+        <div class="metric-value" id="m4">0+</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICIOS -->
+<section id="servicios">
+  <div class="section-inner">
+    <div class="section-eyebrow">Servicios</div>
+    <h2>Soluciones end-to-end para operaciones mineras</h2>
+    <p class="section-lead">Desde el análisis de laboratorio hasta el dashboard ejecutivo, cubrimos todo el flujo de datos de tu operación.</p>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">⚗️</div>
+        <h3>Servicios analíticos y QC</h3>
+        <p>Control estadístico de proceso (SPC), cartas de Shewhart, Levey-Jennings y Westgard. Cálculo automático de Cpk e índices de capacidad.</p>
+        <div class="service-tags"><span class="tag">LIMS</span><span class="tag">Cpk</span><span class="tag">Westgard</span><span class="tag">ICP-MS</span></div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🖥️</div>
+        <h3>Automatización y pipelines</h3>
+        <p>ETL de reportes de laboratorio, integración con SampleManager, descarga automática desde email, y workflows GitHub Actions en servidores locales.</p>
+        <div class="service-tags"><span class="tag">Python</span><span class="tag">ETL</span><span class="tag">GitHub Actions</span><span class="tag">SQL Server</span></div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📊</div>
+        <h3>Dashboards e informes</h3>
+        <p>Visualización interactiva de resultados analíticos, generación automática de informes PDF/Excel y dashboards web accesibles desde cualquier dispositivo.</p>
+        <div class="service-tags"><span class="tag">Streamlit</span><span class="tag">Plotly</span><span class="tag">Excel</span><span class="tag">PDF</span></div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🧪</div>
+        <h3>Consultoría química</h3>
+        <p>Asesoría técnica en métodos analíticos para muestras de minería: digestiones ácidas, espectrometría, análisis de suelos y pulpas.</p>
+        <div class="service-tags"><span class="tag">ICP-OES</span><span class="tag">AAS</span><span class="tag">Digestión</span><span class="tag">NCh</span></div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🏔️</div>
+        <h3>Gestión de muestras</h3>
+        <p>Trazabilidad completa desde el terreno hasta el informe. Integración con sistemas LIMS y cadenas de custodia para proyectos de exploración y producción.</p>
+        <div class="service-tags"><span class="tag">LIMS</span><span class="tag">Trazabilidad</span><span class="tag">Exploración</span></div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🔌</div>
+        <h3>Integración de sistemas</h3>
+        <p>Conectamos tu laboratorio con sistemas ERP, plataformas de terceros y bases de datos corporativas mediante APIs y scripts a medida.</p>
+        <div class="service-tags"><span class="tag">API REST</span><span class="tag">PostgreSQL</span><span class="tag">SAP</span><span class="tag">Power BI</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALERIA -->
+<section id="galeria">
+  <div class="section-inner">
+    <div class="section-eyebrow">Casos de uso</div>
+    <h2>Proyectos para la industria</h2>
+    <p class="section-lead">Ejemplos reales de soluciones implementadas en laboratorios analíticos, operaciones mineras y empresas de servicios.</p>
+    <div class="gallery-tabs">
+      <button class="gtab active" onclick="filterGallery('todos',this)">Todos</button>
+      <button class="gtab" onclick="filterGallery('qc',this)">Control de calidad</button>
+      <button class="gtab" onclick="filterGallery('dashboard',this)">Dashboards</button>
+      <button class="gtab" onclick="filterGallery('quimica',this)">Química analítica</button>
+      <button class="gtab" onclick="filterGallery('lims',this)">LIMS / datos</button>
+    </div>
+    <div class="gallery-grid" id="gallery-grid">
+      <!-- items generados por JS -->
+    </div>
+  </div>
+</section>
+
+<!-- DEMO -->
+<section id="demo">
+  <div class="section-inner">
+    <div class="section-eyebrow">Demo interactivo</div>
+    <h2>Dashboard de control de calidad</h2>
+    <p class="section-lead">Vista previa del dashboard analítico. Integra cartas de control, Cpk en tiempo real y exportación de informes.</p>
+    <div class="demo-container">
+      <div class="demo-topbar">
+        <div class="demo-dot" style="background:#ef4444"></div>
+        <div class="demo-dot" style="background:#f59e0b"></div>
+        <div class="demo-dot" style="background:#22c55e"></div>
+        <div class="demo-url">dashboard.tuempresa.cl — Control QC Laboratorio</div>
+      </div>
+      <div class="demo-body">
+        <div class="demo-sidebar">
+          <div class="demo-nav-item active">📈 Control de calidad</div>
+          <div class="demo-nav-item">📋 Informes</div>
+          <div class="demo-nav-item">🧪 Muestras</div>
+          <div class="demo-nav-item">⚙️ Métodos</div>
+          <div class="demo-nav-item">📁 Archivos</div>
+          <div class="demo-nav-item">👥 Usuarios</div>
+        </div>
+        <div class="demo-content">
+          <div class="demo-header">
+            <div class="demo-title">Carta Levey-Jennings — Cu (ppm) · Lote 2024-07</div>
+            <div class="demo-badge">● Sistema activo</div>
+          </div>
+          <div class="demo-kpis">
+            <div class="demo-kpi">
+              <div class="demo-kpi-label">Cpk estimado</div>
+              <div class="demo-kpi-val" style="color:var(--gold)" id="cpk-val">1.48</div>
+            </div>
+            <div class="demo-kpi">
+              <div class="demo-kpi-label">Muestras en lote</div>
+              <div class="demo-kpi-val" id="samples-val">124</div>
+            </div>
+            <div class="demo-kpi">
+              <div class="demo-kpi-label">Alertas Westgard</div>
+              <div class="demo-kpi-val" style="color:#22c55e">0</div>
+            </div>
+          </div>
+          <div class="demo-chart" id="demo-chart"></div>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:0.8rem;color:var(--text3);margin-top:1rem;text-align:center">Vista de mockup. El dashboard real se conecta a tu base de datos de laboratorio.</p>
+  </div>
+</section>
+
+<!-- QUIENES -->
+<section id="quienes">
+  <div class="section-inner">
+    <div class="section-eyebrow">Quiénes somos</div>
+    <div class="about-grid">
+      <div>
+        <h2>Especialistas en datos para la industria extractiva</h2>
+        <p style="color:var(--text2);line-height:1.7;margin-bottom:1rem">Somos un equipo con formación en química analítica, ciencias de datos y desarrollo de software, enfocados exclusivamente en la industria minera y de laboratorios en Chile.</p>
+        <p style="color:var(--text2);line-height:1.7">Entendemos el lenguaje del laboratorio y el lenguaje del código. Eso nos permite construir soluciones que realmente se usan, no sistemas que quedan en el cajón.</p>
+        <div class="about-stats">
+          <div class="stat-card"><div class="stat-num">+10</div><div class="stat-desc">Años en industria minera y analítica</div></div>
+          <div class="stat-card"><div class="stat-num">5</div><div class="stat-desc">Proyectos activos en operación</div></div>
+          <div class="stat-card"><div class="stat-num">3</div><div class="stat-desc">Regiones con clientes activos</div></div>
+          <div class="stat-card"><div class="stat-num">100%</div><div class="stat-desc">Enfoque en minería y lab. analítico</div></div>
+        </div>
+      </div>
+      <div>
+        <div style="margin-bottom:1.5rem">
+          <p style="font-size:0.8rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem">Equipo</p>
+          <div class="team-grid">
+            <div class="team-card">
+              <div class="team-avatar">👨‍🔬</div>
+              <div><div class="team-name">Nombre Apellido</div><div class="team-role">Químico analítico · Data scientist</div></div>
+            </div>
+            <div class="team-card">
+              <div class="team-avatar">👩‍💻</div>
+              <div><div class="team-name">Nombre Apellido</div><div class="team-role">Desarrolladora Python · LIMS</div></div>
+            </div>
+            <div class="team-card">
+              <div class="team-avatar">👨‍💼</div>
+              <div><div class="team-name">Nombre Apellido</div><div class="team-role">Consultor minería · Proyectos</div></div>
+            </div>
+            <div class="team-card">
+              <div class="team-avatar">👩‍🔬</div>
+              <div><div class="team-name">Nombre Apellido</div><div class="team-role">Analista QC · Westgard</div></div>
+            </div>
+          </div>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem">
+          <p style="font-size:0.8rem;color:var(--text3);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:1px">Stack tecnológico</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <span class="tag" style="color:var(--text2)">Python</span><span class="tag" style="color:var(--text2)">PostgreSQL</span><span class="tag" style="color:var(--text2)">SQL Server</span><span class="tag" style="color:var(--text2)">Streamlit</span><span class="tag" style="color:var(--text2)">Plotly</span><span class="tag" style="color:var(--text2)">GitHub Actions</span><span class="tag" style="color:var(--text2)">SampleManager</span><span class="tag" style="color:var(--text2)">NSSM</span><span class="tag" style="color:var(--text2)">pandas</span><span class="tag" style="color:var(--text2)">openpyxl</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section id="contacto">
+  <div class="section-inner">
+    <div class="section-eyebrow">Contacto</div>
+    <div class="contact-grid">
+      <div>
+        <h2>Conversemos sobre tu proyecto</h2>
+        <p style="color:var(--text2);line-height:1.7;margin-bottom:2rem">Cuéntanos el desafío de datos o laboratorio que enfrentas. En 48 horas te respondemos con una propuesta inicial sin costo.</p>
+        <div class="contact-info">
+          <div class="contact-item">
+            <div class="contact-icon">📧</div>
+            <div><div class="contact-label">Email</div><div class="contact-val">contacto@tuempresa.cl</div></div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">📱</div>
+            <div><div class="contact-label">WhatsApp</div><div class="contact-val">+56 9 XXXX XXXX</div></div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">📍</div>
+            <div><div class="contact-label">Ubicación</div><div class="contact-val">Santiago, Chile · Servicio remoto a todo el país</div></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="form-group">
+          <label>Nombre y empresa</label>
+          <input type="text" placeholder="Juan Pérez — Minera XYZ">
+        </div>
+        <div class="form-group">
+          <label>Correo electrónico</label>
+          <input type="email" placeholder="juan@mineraxyz.cl">
+        </div>
+        <div class="form-group">
+          <label>Tipo de proyecto</label>
+          <select>
+            <option value="">Selecciona una categoría</option>
+            <option>Control de calidad analítico (QC/SPC)</option>
+            <option>Dashboard e informes automatizados</option>
+            <option>Integración LIMS / base de datos</option>
+            <option>Consultoría química analítica</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Descripción del desafío</label>
+          <textarea placeholder="Cuéntanos brevemente qué necesitas resolver..."></textarea>
+        </div>
+        <button class="btn-submit" onclick="handleSubmit()">Enviar mensaje →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-copy">© 2025 TuEmpresa SpA. Todos los derechos reservados.</div>
+    <div class="footer-links">
+      <a href="#inicio">Inicio</a>
+      <a href="#servicios">Servicios</a>
+      <a href="#galeria">Casos</a>
+      <a href="#contacto">Contacto</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// COUNTER ANIMATION
+function animateCounter(id, target, suffix, duration) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const suffix2 = el.innerHTML.includes('↑') ? ' <span>↑</span>' : '+';
+  let start = 0;
+  const step = target / (duration / 16);
+  const timer = setInterval(() => {
+    start += step;
+    if (start >= target) { start = target; clearInterval(timer); }
+    el.innerHTML = Math.floor(start) + suffix + (id !== 'm4' ? ' <span>↑</span>' : '+');
+  }, 16);
+}
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    animateCounter('m1', 48250, '', 1800);
+    animateCounter('m2', 94, '%', 1600);
+    animateCounter('m3', 12, '', 1400);
+    animateCounter('m4', 10, '', 1200);
+  }, 400);
+});
+
+// GALLERY DATA
+const galleryItems = [
+  {cat:'qc',title:'Carta Levey-Jennings Cu/Fe',desc:'Control multielemento para laboratorio de exploración, con alertas Westgard automáticas.',icon:'📈'},
+  {cat:'dashboard',title:'Dashboard ejecutivo de producción',desc:'KPIs operacionales de planta en tiempo real, accesible desde cualquier dispositivo.',icon:'🖥️'},
+  {cat:'lims',title:'ETL desde Gmail → PostgreSQL',desc:'Descarga automática de informes PDF del laboratorio externo y carga a base de datos.',icon:'📬'},
+  {cat:'quimica',title:'Validación método ICP-OES',desc:'Cálculo de exactitud, precisión, LD y LC para métodos de análisis de suelos y pulpas.',icon:'⚗️'},
+  {cat:'qc',title:'Índice Cpk por campaña',desc:'Seguimiento de capacidad de proceso por lote, método y analista a lo largo del tiempo.',icon:'📊'},
+  {cat:'dashboard',title:'Informe automático PDF',desc:'Generación programada de informes mensuales de QC directamente desde el servidor.',icon:'📄'},
+  {cat:'lims',title:'Integración SampleManager',desc:'Conexión Python ↔ SampleManager LIMS para lectura y escritura de resultados.',icon:'🔗'},
+  {cat:'quimica',title:'Análisis de blancos y estándares',desc:'Trazabilidad de materiales de referencia certificados y detección de contaminación.',icon:'🧪'},
+];
+
+let activeFilter = 'todos';
+function filterGallery(cat, btn) {
+  activeFilter = cat;
+  document.querySelectorAll('.gtab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGallery();
+}
+function renderGallery() {
+  const grid = document.getElementById('gallery-grid');
+  const items = activeFilter === 'todos' ? galleryItems : galleryItems.filter(i => i.cat === activeFilter);
+  grid.innerHTML = items.map(item => `
+    <div class="gallery-item">
+      <div class="gallery-img">
+        <div class="gallery-img-icon">${item.icon}</div>
+        <div class="gallery-img-label">PNG del caso de uso aquí</div>
+      </div>
+      <div class="gallery-info">
+        <h4>${item.title}</h4>
+        <p>${item.desc}</p>
+      </div>
+    </div>
+  `).join('');
+}
+renderGallery();
+
+// DEMO CHART
+function renderDemoChart() {
+  const chart = document.getElementById('demo-chart');
+  if (!chart) return;
+  const vals = [65,72,68,80,75,71,69,78,82,74,70,76,73,79,77,68,83,71,75,80];
+  chart.innerHTML = vals.map(v => {
+    const h = Math.round((v/100) * 120);
+    const color = v > 80 ? '#ef4444' : v > 75 ? '#f59e0b' : '#F0A500';
+    return `<div class="bar" style="height:${h}px;background:${color};opacity:0.75"></div>`;
+  }).join('');
+}
+renderDemoChart();
+
+// FORM
+function handleSubmit() {
+  const btn = document.querySelector('.btn-submit');
+  btn.textContent = '✓ Mensaje enviado — te contactaremos pronto';
+  btn.style.background = '#22c55e';
+  btn.style.color = '#fff';
+}
+
+// SMOOTH SCROLL NAV
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>
