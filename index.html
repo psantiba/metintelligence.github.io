@@ -3,573 +3,848 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>metQuant — Sistemas de información de laboratorios y bases de datos geoquímicas</title>
+<title>metQuant — Sistemas de información para laboratorios geoquímicos y metalúrgicos</title>
+<meta name="description" content="Pipelines de datos, bases de datos, integración de instrumentos, reportes, cumplimiento ISO/IEC 17025 y AMIRA P754, y optimización de laboratorios con investigación operativa.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230a5c66'/%3E%3Cpath d='M6 24V10l5 8 5-8v14M20 24V8h6' fill='none' stroke='%23f4f2ec' stroke-width='2.4'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0A0C0F;
-  --bg2:#111418;
-  --bg3:#1A1F28;
-  --card:#1E2530;
-  --card2:#242C38;
-  --gold:#F0A500;
-  --gold2:#FFB829;
-  --gold-dim:#F0A50022;
-  --text:#E8EDF5;
-  --text2:#8B9BB4;
-  --text3:#4A5568;
-  --border:#2A3445;
-  --radius:12px;
+  --paper:#f4f2ec;
+  --panel:#fbfaf7;
+  --ink:#132028;
+  --ink2:#46565e;
+  --mute:#7a888e;
+  --rule:#cfcabd;
+  --accent:#0a5c66;
+  --accent-bg:#dde9e9;
+  --ok:#2d6a4f;
+  --warn:#b7791f;
+  --bad:#b3261e;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  --serif:'IBM Plex Serif',Georgia,serif;
+  --sans:'IBM Plex Sans',system-ui,sans-serif;
 }
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:16px;line-height:1.6;overflow-x:hidden}
+html{scroll-behavior:smooth;scroll-padding-top:60px}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6}
+a{color:var(--accent)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 28px}
 
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,12,15,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 5%}
-.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:64px}
-.logo{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.25rem;color:var(--text);letter-spacing:-0.5px}
-.logo span{color:var(--gold)}
-.nav-links{display:flex;gap:2rem;list-style:none}
-.nav-links a{color:var(--text2);text-decoration:none;font-size:0.875rem;font-weight:500;transition:color .2s}
-.nav-links a:hover{color:var(--gold)}
-.nav-cta{background:var(--gold);color:#0A0C0F;padding:0.45rem 1.1rem;border-radius:6px;font-size:0.875rem;font-weight:600;text-decoration:none;transition:background .2s}
-.nav-cta:hover{background:var(--gold2)}
+/* barra superior */
+.top{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--ink)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:52px}
+.brand{font-family:var(--serif);font-size:1.25rem;font-weight:500;color:var(--ink);text-decoration:none;letter-spacing:-.2px}
+.brand b{font-weight:600;color:var(--accent)}
+.top nav{display:flex;gap:26px;align-items:center}
+.top nav a{font-size:.85rem;color:var(--ink2);text-decoration:none}
+.top nav a:hover{color:var(--accent);text-decoration:underline;text-underline-offset:4px}
+.top nav a.contact{color:var(--ink);font-weight:600;border-bottom:2px solid var(--accent)}
 
-/* HERO */
-#inicio{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:120px 5% 80px;position:relative;overflow:hidden}
-.hero-grid{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:60px 60px;opacity:0.25}
-.hero-glow{position:absolute;top:-200px;right:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(240,165,0,0.08) 0%,transparent 65%);pointer-events:none}
-.hero-inner{max-width:1200px;margin:0 auto;position:relative;z-index:1}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--gold-dim);border:1px solid rgba(240,165,0,0.3);color:var(--gold);padding:0.3rem 0.9rem;border-radius:20px;font-size:0.75rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:2rem}
-.pulse{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.3)}}
-h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(2.5rem,5vw,4rem);font-weight:700;line-height:1.1;letter-spacing:-1.5px;margin-bottom:1.5rem;max-width:800px}
-h1 em{font-style:normal;color:var(--gold)}
-.hero-sub{font-size:1.1rem;color:var(--text2);max-width:560px;margin-bottom:3rem;line-height:1.7}
-.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:4rem}
-.btn-primary{background:var(--gold);color:#0A0C0F;padding:0.85rem 1.8rem;border-radius:8px;font-weight:700;font-size:0.95rem;text-decoration:none;transition:background .2s,transform .15s}
-.btn-primary:hover{background:var(--gold2);transform:translateY(-1px)}
-.btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border);padding:0.85rem 1.8rem;border-radius:8px;font-weight:500;font-size:0.95rem;text-decoration:none;transition:border-color .2s,color .2s}
-.btn-secondary:hover{border-color:var(--gold);color:var(--gold)}
+/* cabecera */
+.head{padding:64px 0 40px}
+.kicker{font-family:var(--mono);font-size:.75rem;color:var(--accent);letter-spacing:.04em;margin-bottom:18px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(2rem,4.4vw,3.2rem);line-height:1.12;letter-spacing:-.5px;max-width:20ch}
+.lede{max-width:62ch;margin-top:22px;color:var(--ink2);font-size:1.05rem}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);margin-top:44px;border-top:1px solid var(--ink);border-bottom:1px solid var(--rule)}
+.stat{padding:18px 20px 16px 0}
+.stat+.stat{padding-left:20px;border-left:1px solid var(--rule)}
+.stat b{display:block;font-family:var(--mono);font-weight:500;font-size:2.3rem;line-height:1.1;letter-spacing:-1px}
+.stat b small{font-size:1rem;color:var(--mute);margin-left:4px;letter-spacing:0}
+.stat span{display:block;font-size:.8rem;color:var(--ink2);margin-top:6px;line-height:1.4}
 
-/* LIVE METRICS */
-.metrics-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
-.metric{background:var(--bg2);padding:1.25rem 1.5rem}
-.metric-label{font-size:0.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.4rem}
-.metric-value{font-family:'Space Grotesk',sans-serif;font-size:1.5rem;font-weight:700;color:var(--text);letter-spacing:-0.5px}
-.metric-value span{font-size:0.8rem;color:var(--gold);font-weight:500;margin-left:4px}
+/* secciones */
+.sec{padding:68px 0 72px;border-top:1px solid var(--ink)}
+.sec-head{display:grid;grid-template-columns:90px 1fr;gap:12px;margin-bottom:34px}
+.sec-n{font-family:var(--mono);font-size:.8rem;color:var(--mute);padding-top:10px}
+h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.5rem,2.8vw,2.1rem);line-height:1.2;letter-spacing:-.3px;max-width:30ch}
+.sec-lead{color:var(--ink2);max-width:66ch;margin-top:12px}
 
-/* SECTIONS */
-section{padding:100px 5%}
-.section-inner{max-width:1200px;margin:0 auto}
-.section-eyebrow{font-size:0.7rem;color:var(--gold);text-transform:uppercase;letter-spacing:2px;font-weight:600;margin-bottom:0.75rem}
-h2{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.8rem,3.5vw,2.75rem);font-weight:700;letter-spacing:-1px;line-height:1.15;margin-bottom:1.25rem}
-.section-lead{color:var(--text2);font-size:1.05rem;max-width:600px;margin-bottom:3.5rem;line-height:1.7}
+/* pestañas (estilo panel) */
+.tabs{display:flex;border-bottom:1px solid var(--rule);overflow-x:auto;margin-bottom:0}
+.tab{font:500 .88rem var(--sans);padding:11px 16px;border:0;background:none;color:var(--ink2);border-bottom:3px solid transparent;margin-bottom:-1px;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink);background:rgba(10,92,102,.05)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.pane[hidden]{display:none}
+.pane{padding-top:30px}
+.cols{display:grid;grid-template-columns:5fr 7fr;gap:44px;align-items:start}
+.pane h3{font-family:var(--serif);font-weight:600;font-size:1.3rem;line-height:1.25;margin-bottom:12px}
+.pane p{color:var(--ink2);margin-bottom:14px}
+.pane ul.dl{list-style:none;margin:14px 0 18px;border-top:1px solid var(--rule)}
+.pane ul.dl li{padding:8px 0;border-bottom:1px solid var(--rule);font-size:.92rem;color:var(--ink)}
+.pane ul.dl li::before{content:"→ ";color:var(--accent);font-family:var(--mono)}
+.stack{font-family:var(--mono);font-size:.76rem;color:var(--mute);line-height:1.7}
 
-/* SERVICIOS */
-#servicios{background:var(--bg2)}
-.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
-.service-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;transition:border-color .2s,transform .2s;cursor:default}
-.service-card:hover{border-color:rgba(240,165,0,0.4);transform:translateY(-3px)}
-.service-icon{width:48px;height:48px;background:var(--gold-dim);border:1px solid rgba(240,165,0,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;font-size:1.3rem}
-.service-card h3{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:600;margin-bottom:0.6rem;color:var(--text)}
-.service-card p{font-size:0.9rem;color:var(--text2);line-height:1.6}
-.service-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:1.25rem}
-.tag{background:var(--bg3);border:1px solid var(--border);color:var(--text3);font-size:0.7rem;padding:3px 10px;border-radius:20px;letter-spacing:0.5px}
+/* figuras */
+figure{background:var(--panel);border:1px solid var(--rule);padding:14px 14px 8px}
+figcaption{font-family:var(--mono);font-size:.7rem;color:var(--mute);padding:8px 2px 6px}
+.chart{width:100%;height:auto;display:block}
+.chart text{font-family:var(--mono)}
+.chart .ax{font-size:10.5px;fill:var(--mute)}
+.chart .lbl{font-size:10.5px;fill:var(--ink2)}
+.chart .lbl-b{font-size:10.5px;fill:var(--bad)}
+.chart .lbl-w{font-size:10.5px;fill:var(--warn)}
+.chart .grid{stroke:var(--rule);stroke-width:.6}
+.chart .ser{fill:none;stroke:var(--accent);stroke-width:1.5;stroke-linejoin:round}
+.chart .ser2{fill:none;stroke:var(--ink);stroke-width:1.6}
+.chart .ln-bad{stroke:var(--bad);stroke-dasharray:6 4;stroke-width:1}
+.chart .ln-warn{stroke:var(--warn);stroke-dasharray:2 3;stroke-width:.9}
+.chart .ln-cl{stroke:var(--ink2);stroke-width:1}
+.chart .ln-split{stroke:var(--mute);stroke-dasharray:1 4;stroke-width:1}
+.chart .pt-0{fill:var(--accent)}
+.chart .pt-1{fill:var(--warn)}
+.chart .pt-2{fill:var(--bad);stroke:var(--panel);stroke-width:1.5}
+.chart .dot{fill:var(--mute);opacity:.55}
+.chart .bd-a{fill:rgba(179,38,30,.07)}
+.chart .bd-b{fill:rgba(183,121,31,.09)}
+.chart .bd-c{fill:rgba(10,92,102,.06)}
+.chart .box{fill:var(--paper);stroke:var(--ink);stroke-width:1}
+.chart .box-a{fill:var(--accent-bg);stroke:var(--accent);stroke-width:1}
+.chart .t1{font-family:var(--sans);font-size:12.5px;font-weight:600;fill:var(--ink)}
+.chart .t2{font-size:10px;fill:var(--ink2)}
+.chart .pk{fill:var(--accent)}
+.chart .fk{fill:var(--warn)}
+.chart .conn{stroke:var(--ink);stroke-width:1.1;fill:none}
+.chart .bar-in{fill:var(--accent-bg);stroke:var(--accent);stroke-width:.8}
+.chart .bar-out{fill:rgba(179,38,30,.18);stroke:var(--bad);stroke-width:.8}
+.chart .curve{fill:none;stroke:var(--ink);stroke-width:1.4}
 
-/* GALERIA */
-#galeria{background:var(--bg)}
-.gallery-tabs{display:flex;gap:0.5rem;margin-bottom:2.5rem;flex-wrap:wrap}
-.gtab{background:transparent;border:1px solid var(--border);color:var(--text2);padding:0.5rem 1.1rem;border-radius:6px;font-size:0.85rem;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
-.gtab.active,.gtab:hover{background:var(--gold-dim);border-color:rgba(240,165,0,0.4);color:var(--gold)}
-.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem}
-.gallery-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:transform .2s,border-color .2s;cursor:pointer}
-.gallery-item:hover{transform:translateY(-3px);border-color:rgba(240,165,0,0.35)}
-.gallery-img{width:100%;aspect-ratio:16/10;background:var(--bg3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem;position:relative;overflow:hidden}
-.gallery-img::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--bg3) 0%,var(--card2) 100%)}
-.gallery-img-icon{position:relative;z-index:1;font-size:2rem;opacity:0.3}
-.gallery-img-label{position:relative;z-index:1;font-size:0.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px}
-.gallery-info{padding:1rem 1.25rem}
-.gallery-info h4{font-family:'Space Grotesk',sans-serif;font-size:0.95rem;font-weight:600;margin-bottom:0.3rem}
-.gallery-info p{font-size:0.8rem;color:var(--text2);line-height:1.5}
+/* controles */
+.ctl{display:flex;flex-wrap:wrap;gap:8px 26px;align-items:center;margin-bottom:12px;font-size:.85rem;color:var(--ink2)}
+.chk{display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+.chk input{accent-color:var(--accent);width:15px;height:15px}
+.rng{display:inline-flex;align-items:center;gap:8px}
+.rng input{accent-color:var(--accent);width:120px}
+.rng output{font-family:var(--mono);font-size:.8rem;color:var(--ink);min-width:3.2ch}
+.seg{display:inline-flex;border:1px solid var(--ink)}
+.seg button{font:500 .8rem var(--sans);padding:5px 12px;background:var(--panel);border:0;cursor:pointer;color:var(--ink)}
+.seg button+button{border-left:1px solid var(--ink)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
 
-/* DEMO */
-#demo{background:var(--bg2)}
-.demo-container{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden}
-.demo-topbar{background:var(--bg);padding:0.75rem 1.25rem;display:flex;align-items:center;gap:0.5rem;border-bottom:1px solid var(--border)}
-.demo-dot{width:10px;height:10px;border-radius:50%}
-.demo-url{background:var(--bg2);border:1px solid var(--border);border-radius:5px;padding:0.3rem 0.8rem;font-size:0.75rem;color:var(--text3);margin-left:0.5rem;flex:1;max-width:300px}
-.demo-body{display:grid;grid-template-columns:200px 1fr;min-height:420px}
-.demo-sidebar{background:var(--bg);border-right:1px solid var(--border);padding:1.25rem 0}
-.demo-nav-item{padding:0.6rem 1.25rem;font-size:0.8rem;color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:0.6rem;transition:background .15s}
-.demo-nav-item:hover,.demo-nav-item.active{background:var(--gold-dim);color:var(--gold)}
-.demo-nav-item.active{border-right:2px solid var(--gold)}
-.demo-content{padding:1.5rem;background:var(--bg2)}
-.demo-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem}
-.demo-title{font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:600}
-.demo-badge{background:rgba(34,197,94,0.15);color:#22c55e;font-size:0.7rem;padding:3px 10px;border-radius:20px;font-weight:500}
-.demo-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:1rem}
-.demo-kpi{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:0.85rem 1rem}
-.demo-kpi-label{font-size:0.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.25rem}
-.demo-kpi-val{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:700}
-.demo-chart{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1rem;height:150px;display:flex;align-items:flex-end;gap:4px;overflow:hidden}
-.bar{background:var(--gold);border-radius:3px 3px 0 0;flex:1;opacity:0.8;transition:height .3s}
+/* lectura de valores */
+.read{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));border-top:1px solid var(--ink);margin-top:14px}
+.read div{padding:10px 14px 8px 0}
+.read div+div{padding-left:14px;border-left:1px solid var(--rule)}
+.read b{display:block;font-family:var(--mono);font-weight:500;font-size:1.35rem;letter-spacing:-.5px}
+.read span{font-size:.72rem;color:var(--ink2);line-height:1.3;display:block}
+.read .v-bad{color:var(--bad)} .read .v-ok{color:var(--ok)} .read .v-warn{color:var(--warn)}
+.sig{font-family:var(--mono);font-size:.76rem;color:var(--ink2);margin-top:10px;min-height:1.4em}
 
-/* QUIENES */
-#quienes{background:var(--bg)}
-.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
-.about-stats{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-top:2.5rem}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem}
-.stat-num{font-family:'Space Grotesk',sans-serif;font-size:2.25rem;font-weight:700;color:var(--gold);letter-spacing:-1px}
-.stat-desc{font-size:0.85rem;color:var(--text2);margin-top:0.25rem}
-.team-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-.team-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;display:flex;align-items:center;gap:1rem}
-.team-avatar{width:48px;height:48px;border-radius:50%;background:var(--bg3);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
-.team-name{font-family:'Space Grotesk',sans-serif;font-size:0.9rem;font-weight:600}
-.team-role{font-size:0.75rem;color:var(--text2)}
+/* bloque de uso */
+.use{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:26px;border-top:1px solid var(--ink)}
+.use div{padding:14px 18px 6px 0}
+.use div+div{padding-left:18px;border-left:1px solid var(--rule)}
+.use h4{font-family:var(--mono);font-weight:500;font-size:.72rem;color:var(--accent);margin-bottom:6px;letter-spacing:.02em;text-transform:lowercase}
+.use p{font-size:.86rem;color:var(--ink2);margin:0;line-height:1.55}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 
-/* CONTACTO */
-#contacto{background:var(--bg2)}
-.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
-.contact-info{display:flex;flex-direction:column;gap:1.5rem;margin-top:2rem}
-.contact-item{display:flex;align-items:flex-start;gap:1rem}
-.contact-icon{width:40px;height:40px;background:var(--gold-dim);border:1px solid rgba(240,165,0,0.2);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.contact-label{font-size:0.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.2rem}
-.contact-val{font-size:0.95rem;color:var(--text)}
-.form-group{margin-bottom:1.25rem}
-.form-group label{display:block;font-size:0.8rem;color:var(--text2);margin-bottom:0.5rem;font-weight:500}
-.form-group input,.form-group textarea,.form-group select{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:0.75rem 1rem;border-radius:8px;font-family:'Inter',sans-serif;font-size:0.9rem;outline:none;transition:border-color .2s}
-.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:rgba(240,165,0,0.5)}
-.form-group select{appearance:none;cursor:pointer}
-.form-group textarea{resize:vertical;min-height:120px}
-.btn-submit{width:100%;background:var(--gold);color:#0A0C0F;border:none;padding:0.9rem;border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:background .2s}
-.btn-submit:hover{background:var(--gold2)}
+/* tabla */
+table.req{width:100%;border-collapse:collapse;font-size:.88rem}
+table.req th{font-family:var(--mono);font-weight:500;font-size:.7rem;text-align:left;color:var(--mute);padding:8px 12px 8px 0;border-bottom:1px solid var(--ink);letter-spacing:.02em}
+table.req td{padding:10px 12px 10px 0;border-bottom:1px solid var(--rule);vertical-align:top;color:var(--ink2)}
+table.req td:first-child{font-family:var(--mono);font-size:.78rem;color:var(--ink);white-space:nowrap}
+.note{font-size:.78rem;color:var(--mute);margin-top:12px}
 
-/* FOOTER */
-footer{background:var(--bg);border-top:1px solid var(--border);padding:2.5rem 5%}
-.footer-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
-.footer-copy{font-size:0.8rem;color:var(--text3)}
-.footer-links{display:flex;gap:1.5rem}
-.footer-links a{font-size:0.8rem;color:var(--text3);text-decoration:none;transition:color .2s}
-.footer-links a:hover{color:var(--gold)}
+/* nosotros / contacto */
+.about{display:grid;grid-template-columns:1fr 1fr;gap:56px}
+.about p{color:var(--ink2);margin-bottom:14px;max-width:56ch}
+.about h3{font-family:var(--serif);font-weight:600;font-size:1.05rem;margin:22px 0 6px}
+.tags{font-family:var(--mono);font-size:.78rem;color:var(--ink2);line-height:2;border-top:1px solid var(--rule);padding-top:10px}
+.tags i{font-style:normal;color:var(--rule);margin:0 8px}
+.contact{display:grid;grid-template-columns:1fr 1fr;gap:56px}
+.cinfo{margin-top:26px;border-top:1px solid var(--ink)}
+.cinfo div{display:grid;grid-template-columns:110px 1fr;padding:11px 0;border-bottom:1px solid var(--rule);font-size:.93rem}
+.cinfo span{font-family:var(--mono);font-size:.72rem;color:var(--mute);padding-top:3px}
+form label{display:block;font-family:var(--mono);font-size:.72rem;color:var(--ink2);margin:0 0 5px}
+form .g{margin-bottom:16px}
+form input[type=text],form input[type=email],form select,form textarea{width:100%;background:var(--panel);border:1px solid var(--ink2);border-radius:0;padding:10px 12px;font:400 .93rem var(--sans);color:var(--ink)}
+form textarea{min-height:110px;resize:vertical}
+form input:focus,form select:focus,form textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+.send{background:var(--ink);color:var(--paper);border:0;border-radius:0;padding:12px 26px;font:600 .93rem var(--sans);cursor:pointer}
+.send:hover{background:var(--accent)}
+.send:disabled{opacity:.6;cursor:wait}
+#form-msg{margin-top:12px;font-size:.85rem;display:none}
+footer{border-top:1px solid var(--ink);padding:22px 0 34px;font-size:.78rem;color:var(--mute)}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+footer a{color:var(--mute);margin-left:18px;text-decoration:none}
+footer a:hover{color:var(--accent)}
 
-/* DIVIDER */
-.divider{height:1px;background:var(--border);margin:0 5%}
-
-@media(max-width:768px){
-  .about-grid,.contact-grid{grid-template-columns:1fr}
-  .demo-body{grid-template-columns:1fr}
-  .demo-sidebar{display:none}
-  .nav-links{display:none}
-  .team-grid{grid-template-columns:1fr}
+@media(max-width:860px){
+  .cols,.about,.contact{grid-template-columns:1fr;gap:30px}
+  .stats{grid-template-columns:1fr 1fr}
+  .stat:nth-child(3){padding-left:0;border-left:0}
+  .stat:nth-child(n+3){border-top:1px solid var(--rule)}
+  .use{grid-template-columns:1fr 1fr}
+  .use div:nth-child(3){padding-left:0;border-left:0}
+  .use div:nth-child(n+3){border-top:1px solid var(--rule)}
+  .sec-head{grid-template-columns:1fr}
+  .top nav a:not(.contact){display:none}
+  .two{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <div class="nav-inner">
-    <div class="logo">met<span>Quant</span></div>
-    <ul class="nav-links">
-      <li><a href="#servicios">Servicios</a></li>
-      <li><a href="#galeria">Casos de uso</a></li>
-      <li><a href="#demo">Demo</a></li>
-      <li><a href="#quienes">Nosotros</a></li>
-    </ul>
-    <a href="#contacto" class="nav-cta">Contactar</a>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#inicio">met<b>Quant</b></a>
+    <nav>
+      <a href="#servicios">Servicios</a>
+      <a href="#control">Cartas de control</a>
+      <a href="#nosotros">Nosotros</a>
+      <a class="contact" href="#contacto">Contacto</a>
+    </nav>
   </div>
-</nav>
+</header>
 
-<!-- HERO -->
-<section id="inicio">
-  <div class="hero-grid"></div>
-  <div class="hero-glow"></div>
-  <div class="hero-inner">
-    <div class="hero-eyebrow">
-      <div class="pulse"></div>
-      Especialistas en información geoquímica y metalúrgica · Chile & Latinoamérica
-    </div>
-    <h1>Sus datos metalúrgicos merecen algo mejor<br>que una <em>planilla Excel</em></h1>
-    <p class="hero-sub">Diseñamos sistemas de información para laboratorios geoquímicos y operaciones metalúrgicas que automatizan el balance metalúrgico, eliminan el cálculo manual en planillas Excel y garantizan trazabilidad robusta según estándares AMIRA — convirtiendo datos dispersos en información geométalúrgica confiable y accionable.</p>
-    <div class="hero-btns">
-      <a href="#galeria" class="btn-primary">Ver casos de uso</a>
-      <a href="#contacto" class="btn-secondary">Hablar con nosotros</a>
-    </div>
-    <div class="metrics-bar">
-      <div class="metric">
-        <div class="metric-label">Proyectos LIMS diseñados</div>
-        <div class="metric-value" id="m1">0 <span>↑</span></div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">Reducción errores captura</div>
-        <div class="metric-value" id="m2">0% <span>↑</span></div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">Laboratorios implementados</div>
-        <div class="metric-value" id="m3">0 <span>↑</span></div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">Años en industria minera</div>
-        <div class="metric-value" id="m4">0+</div>
-      </div>
+<main>
+<section class="head" id="inicio">
+  <div class="wrap">
+    <div class="kicker">SISTEMAS DE INFORMACIÓN PARA LABORATORIOS · CHILE Y LATINOAMÉRICA</div>
+    <h1>Datos de laboratorio que resisten una auditoría</h1>
+    <p class="lede">Diseñamos sistemas de información para laboratorios geoquímicos y operaciones metalúrgicas. Automatizan el balance metalúrgico, sacan el cálculo de las planillas Excel y dejan trazabilidad completa según ISO/IEC 17025 y AMIRA P754.</p>
+    <div class="stats">
+      <div class="stat"><b>25<small>+ años</small></b><span>en laboratorios metalúrgicos y geoquímicos de la industria minera</span></div>
+      <div class="stat"><b>70<small>+</small></b><span>proyectos LIMS en Chile, Argentina, Perú, Colombia y México</span></div>
+      <div class="stat"><b>35<small>+</small></b><span>laboratorios implementados en Latinoamérica</span></div>
+      <div class="stat"><b>94<small>%</small></b><span>menos errores de captura con datos automatizados</span></div>
     </div>
   </div>
 </section>
 
 <!-- SERVICIOS -->
-<section id="servicios">
-  <div class="section-inner">
-    <div class="section-eyebrow">Servicios</div>
-    <h2>Soluciones end-to-end para operaciones mineras</h2>
-    <p class="section-lead">Desde la captura de datos de laboratorio hasta el portal de visualización ejecutivo, cubrimos todo el ciclo de información geoquímica y metalúrgica.</p>
-    <div class="services-grid">
-      <div class="service-card">
-        <div class="service-icon">⚗️</div>
-        <h3>Análisis estadístico metalúrgico y QC</h3>
-        <p>Análisis estadístico de datos metalúrgicos y de QC: cartas de Shewhart, Levey-Jennings, Westgard y cálculo de Cpk para laboratorios de ensaye y proceso.</p>
-        <div class="service-tags"><span class="tag">LIMS</span><span class="tag">Cpk</span><span class="tag">Westgard</span><span class="tag">ICP-MS</span></div>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">🖥️</div>
-        <h3>Automatización y pipelines de datos</h3>
-        <p>Captura de metadata y normalización automática en bases de datos. Pipelines ETL desde reportes de laboratorio, email y sistemas LIMS hacia SQL Server, Oracle y PostgreSQL.</p>
-        <div class="service-tags"><span class="tag">Python</span><span class="tag">ETL</span><span class="tag">GitHub Actions</span><span class="tag">SQL Server</span></div>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">📊</div>
-        <h3>Reportes y portales de visualización</h3>
-        <p>Diseño e implementación de reportes automatizados y portales web para visualización de datos geoquímicos, metalúrgicos y de QC, accesibles desde cualquier dispositivo.</p>
-        <div class="service-tags"><span class="tag">Streamlit</span><span class="tag">Plotly</span><span class="tag">Excel</span><span class="tag">PDF</span></div>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">🧪</div>
-        <h3>Digitalización de laboratorios</h3>
-        <p>Consultoría experta en digitalización de procesos de laboratorios geoquímicos y metalúrgicos: diagnóstico, diseño de flujos y acompañamiento en la implementación.</p>
-        <div class="service-tags"><span class="tag">ICP-OES</span><span class="tag">AAS</span><span class="tag">Digestión</span><span class="tag">NCh</span></div>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">🏔️</div>
-        <h3>Bases de datos SQL</h3>
-        <p>Implementación y administración de bases de datos SQL Server, Oracle y PostgreSQL para gestión de información geoquímica y metalúrgica en entornos mineros.</p>
-        <div class="service-tags"><span class="tag">LIMS</span><span class="tag">Trazabilidad</span><span class="tag">Exploración</span></div>
-      </div>
-      <div class="service-card">
-        <div class="service-icon">🔌</div>
-        <h3>Machine learning y ciencia de datos</h3>
-        <p>Ciencia de datos y machine learning aplicados a metadatos históricos de procesos metalúrgicos: detección de anomalías, predicción de ley y optimización de procesos.</p>
-        <div class="service-tags"><span class="tag">Python</span><span class="tag">scikit-learn</span><span class="tag">pandas</span><span class="tag">Plotly</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- GALERIA -->
-<section id="galeria">
-  <div class="section-inner">
-    <div class="section-eyebrow">Casos de uso</div>
-    <h2>Proyectos para la industria</h2>
-    <p class="section-lead">Ejemplos reales de soluciones implementadas en laboratorios analíticos, operaciones mineras y empresas de servicios.</p>
-    <div class="gallery-tabs">
-      <button class="gtab active" onclick="filterGallery('todos',this)">Todos</button>
-      <button class="gtab" onclick="filterGallery('qc',this)">Control de calidad</button>
-      <button class="gtab" onclick="filterGallery('dashboard',this)">Dashboards</button>
-      <button class="gtab" onclick="filterGallery('quimica',this)">Química analítica</button>
-      <button class="gtab" onclick="filterGallery('lims',this)">LIMS / datos</button>
-    </div>
-    <div class="gallery-grid" id="gallery-grid">
-      <!-- items generados por JS -->
-    </div>
-  </div>
-</section>
-
-<!-- DEMO -->
-<section id="demo">
-  <div class="section-inner">
-    <div class="section-eyebrow">Demo interactivo</div>
-    <h2>Dashboard de control de calidad</h2>
-    <p class="section-lead">Vista previa del dashboard analítico. Integra cartas de control, Cpk en tiempo real y exportación de informes.</p>
-    <div class="demo-container">
-      <div class="demo-topbar">
-        <div class="demo-dot" style="background:#ef4444"></div>
-        <div class="demo-dot" style="background:#f59e0b"></div>
-        <div class="demo-dot" style="background:#22c55e"></div>
-        <div class="demo-url">dashboard.metquant.cl — Control QC Laboratorio</div>
-      </div>
-      <div class="demo-body">
-        <div class="demo-sidebar">
-          <div class="demo-nav-item active">📈 Control de calidad</div>
-          <div class="demo-nav-item">📋 Informes</div>
-          <div class="demo-nav-item">🧪 Muestras</div>
-          <div class="demo-nav-item">⚙️ Métodos</div>
-          <div class="demo-nav-item">📁 Archivos</div>
-          <div class="demo-nav-item">👥 Usuarios</div>
-        </div>
-        <div class="demo-content">
-          <div class="demo-header">
-            <div class="demo-title">Carta Levey-Jennings — Cu (ppm) · Lote 2024-07</div>
-            <div class="demo-badge">● Sistema activo</div>
-          </div>
-          <div class="demo-kpis">
-            <div class="demo-kpi">
-              <div class="demo-kpi-label">Cpk estimado</div>
-              <div class="demo-kpi-val" style="color:var(--gold)" id="cpk-val">1.48</div>
-            </div>
-            <div class="demo-kpi">
-              <div class="demo-kpi-label">Muestras en lote</div>
-              <div class="demo-kpi-val" id="samples-val">124</div>
-            </div>
-            <div class="demo-kpi">
-              <div class="demo-kpi-label">Alertas Westgard</div>
-              <div class="demo-kpi-val" style="color:#22c55e">0</div>
-            </div>
-          </div>
-          <div class="demo-chart" id="demo-chart"></div>
-        </div>
-      </div>
-    </div>
-    <p style="font-size:0.8rem;color:var(--text3);margin-top:1rem;text-align:center">Vista de mockup. El dashboard real se conecta a tu base de datos de laboratorio.</p>
-  </div>
-</section>
-
-<!-- QUIENES -->
-<section id="quienes">
-  <div class="section-inner">
-    <div class="section-eyebrow">Quiénes somos</div>
-    <div class="about-grid">
+<section class="sec" id="servicios">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-n">01 / SERVICIOS</div>
       <div>
-        <h2>Especialistas en sistemas de información y bases de datos geoquímica y metalúrgica</h2>
-        <p style="color:var(--text2);line-height:1.7;margin-bottom:1rem">Somos un equipo con formación en química analítica, ciencias de datos y desarrollo de software, enfocados exclusivamente en la industria minera y de laboratorios en Chile y Latinoamérica.</p>
-        <p style="color:var(--text2);line-height:1.7">Entendemos el lenguaje del laboratorio y el lenguaje del código. Eso nos permite construir soluciones que realmente se usan, no sistemas que quedan en el cajón.</p>
-        <div class="about-stats">
-          <div class="stat-card"><div class="stat-num">+25</div><div class="stat-desc">Años en industria minera y laboratorios metalúrgicos</div></div>
-          <div class="stat-card"><div class="stat-num">+70</div><div class="stat-desc">Proyectos LIMS en Chile, Argentina, Perú, Colombia y México</div></div>
-          <div class="stat-card"><div class="stat-num">+35</div><div class="stat-desc">Laboratorios implementados en Latinoamérica</div></div>
-          <div class="stat-card"><div class="stat-num">+94%</div><div class="stat-desc">Reducción de errores en captura de datos automatizados</div></div>
+        <h2>Del instrumento al informe, un solo flujo de datos</h2>
+        <p class="sec-lead">Seis líneas de trabajo que se combinan según el laboratorio. Cada pestaña muestra qué entregamos y cómo se ve.</p>
+      </div>
+    </div>
+
+    <div class="tabs" role="tablist" id="tabs-serv">
+      <button class="tab" role="tab" aria-selected="true" data-p="s-pipe">Data pipelines</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="s-db">Bases de datos</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="s-inst">Integración de instrumentos</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="s-rep">Desarrollo de reportes</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="s-norm">ISO 17025 y AMIRA P754</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="s-opt">Optimización de laboratorios</button>
+    </div>
+
+    <div class="pane" id="s-pipe">
+      <div class="cols">
+        <div>
+          <h3>Pipelines de datos de laboratorio</h3>
+          <p>Llevamos los resultados desde donde nacen —reportes en Excel o PDF, correo, planillas de cadena de custodia, sistemas fuente— hasta una base normalizada. Cada carga queda versionada y pasa por reglas de validación explícitas.</p>
+          <ul class="dl">
+            <li>ETL en Python con ingesta versionada de reportes</li>
+            <li>Validación de rangos, unidades, duplicados y códigos de muestra</li>
+            <li>Reproceso idempotente: cargar dos veces no duplica datos</li>
+            <li>Alertas cuando una carga falla o llega incompleta</li>
+            <li>Ejecución programada (GitHub Actions, cron, tareas del servidor)</li>
+          </ul>
+          <div class="stack">Python · pandas · SQLAlchemy · PostgreSQL · SQL Server · Oracle</div>
         </div>
+        <figure>
+          <svg class="chart" id="f-pipe" role="img" aria-label="Diagrama de un pipeline de datos de laboratorio"></svg>
+          <figcaption>Esquema de un pipeline típico. Cada etapa deja registro de qué entró, qué se rechazó y por qué.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="pane" id="s-db" hidden>
+      <div class="cols">
+        <div>
+          <h3>Administración y diseño de bases de datos</h3>
+          <p>Modelamos la información del laboratorio para que la trazabilidad sea una propiedad del esquema y no un trabajo manual: de dónde vino la muestra, quién la analizó, con qué método y bajo qué versión del resultado.</p>
+          <ul class="dl">
+            <li>Diseño relacional con modelo de custodia primero</li>
+            <li>Vistas e interfaces de lectura para LIMS y reportes</li>
+            <li>Índices, respaldos, roles y permisos por perfil</li>
+            <li>Migraciones versionadas y control de cambios del esquema</li>
+            <li>Historial de resultados: ninguna corrección borra el valor anterior</li>
+          </ul>
+          <div class="stack">PostgreSQL · SQL Server · Oracle · SampleManager · vistas · particionado</div>
+        </div>
+        <figure>
+          <svg class="chart" id="f-db" role="img" aria-label="Esquema relacional simplificado de un LIMS"></svg>
+          <figcaption>Esquema simplificado. PK = clave primaria, FK = clave foránea.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="pane" id="s-inst" hidden>
+      <div class="cols">
+        <div>
+          <h3>Integración de instrumentos</h3>
+          <p>Conectamos balanzas, equipos de espectrometría y otros instrumentos con el LIMS o el sistema corporativo, de modo que el dato pasa directo del instrumento al registro sin retipeo.</p>
+          <ul class="dl">
+            <li>Balanzas analíticas por RS-232 o adaptador USB-TTL</li>
+            <li>Lectura de archivos de salida de ICP-OES, AAS y otros equipos</li>
+            <li>Escritura en grillas del LIMS y en SAP, incluso sobre Citrix</li>
+            <li>Verificación de estabilidad y reintentos ante lecturas ruidosas</li>
+            <li>Bitácora con fecha, hora, equipo y usuario por cada captura</li>
+          </ul>
+          <div class="stack">Python · pyserial · Tkinter · SDK de fabricante · SAP · LABCREATE</div>
+        </div>
+        <figure>
+          <svg class="chart" id="f-inst" role="img" aria-label="Diagrama de integración de instrumentos con el LIMS"></svg>
+          <figcaption>Ruta del dato desde el instrumento hasta el registro auditable.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="pane" id="s-rep" hidden>
+      <div class="cols">
+        <div>
+          <h3>Desarrollo de reportes y portales</h3>
+          <p>Informes que se generan solos y portales que se consultan desde cualquier dispositivo. El laboratorio deja de armar el informe mensual a mano y el cliente ve el estado del lote cuando lo necesita.</p>
+          <ul class="dl">
+            <li>Informes PDF y Excel programados, con versión y firma</li>
+            <li>Portales de consulta con filtros por proyecto, lote y método</li>
+            <li>Cartas de control y tablas de QC embebidas en el informe</li>
+            <li>Exportación a CSV, Excel y PDF desde el mismo origen de datos</li>
+            <li>Plantillas con la identidad del laboratorio o del cliente</li>
+          </ul>
+          <div class="stack">Streamlit · Plotly · openpyxl · ReportLab · HTML</div>
+        </div>
+        <figure>
+          <svg class="chart" id="f-rep" role="img" aria-label="Maqueta de un informe de laboratorio"></svg>
+          <figcaption>Estructura de un informe automático: encabezado, carta de control, tabla de resultados y pie con versión.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="pane" id="s-norm" hidden>
+      <h3>Cumplimiento ISO/IEC 17025 y AMIRA P754</h3>
+      <p style="max-width:70ch">El sistema no reemplaza al sistema de gestión del laboratorio, pero produce la evidencia que los requisitos piden: trazabilidad, control de validez de resultados, incertidumbre y registros. Esta es la correspondencia con los requisitos que más se auditan.</p>
+      <table class="req">
+        <thead><tr><th>REQUISITO</th><th>QUÉ EXIGE</th><th>CÓMO SE CUBRE EN EL SISTEMA</th></tr></thead>
+        <tbody>
+          <tr><td>17025 · 6.5</td><td>Trazabilidad metrológica de los resultados</td><td>Materiales de referencia y calibraciones registrados con certificado y vigencia, vinculados a cada resultado.</td></tr>
+          <tr><td>17025 · 7.5 / 8.4</td><td>Registros técnicos controlados</td><td>Historial versionado: quién, cuándo y qué cambió. Ninguna corrección elimina el valor previo.</td></tr>
+          <tr><td>17025 · 7.6</td><td>Evaluación de la incertidumbre de medición</td><td>Estimación desde duplicados, materiales de referencia y precisión intermedia, con cálculo documentado.</td></tr>
+          <tr><td>17025 · 7.7</td><td>Aseguramiento de la validez de los resultados</td><td>Cartas Shewhart y Levey-Jennings, reglas de Westgard, duplicados y blancos con alertas automáticas.</td></tr>
+          <tr><td>17025 · 7.8</td><td>Informe de resultados</td><td>Informes generados desde la base, con versión, trazabilidad de muestra y criterios de aceptación visibles.</td></tr>
+          <tr><td>AMIRA P754</td><td>Contabilidad de metales confiable y auditable</td><td>Trazabilidad de masa y ley por etapa, propagación de incertidumbre, reconciliación de balances y auditoría de datos.</td></tr>
+        </tbody>
+      </table>
+      <p class="note">Entregamos soporte técnico y documental. La acreditación la otorga el organismo acreditador que corresponda.</p>
+    </div>
+
+    <div class="pane" id="s-opt" hidden>
+      <div class="cols">
+        <div>
+          <h3>Optimización de laboratorios con investigación operativa</h3>
+          <p>Cuando hay más muestras que capacidad, el orden importa. Modelamos el laboratorio como un problema de programación de recursos y buscamos el plan que reduce tiempos de entrega y deja menos equipos ociosos.</p>
+          <ul class="dl">
+            <li>Programación de preparación mecánica y ensayo químico (job shop flexible)</li>
+            <li>Asignación de equipos y analistas con restricciones reales</li>
+            <li>Dimensionamiento de capacidad y turnos con simulación</li>
+            <li>Heurísticas y búsqueda local cuando el modelo exacto es muy lento</li>
+            <li>Comparación cuantificada entre el plan actual y el optimizado</li>
+          </ul>
+          <div class="stack">MILP · Pyomo · HiGHS · heurísticas · simulación de eventos discretos</div>
+          <div class="ctl" style="margin-top:18px">
+            <div class="seg" id="gantt-seg">
+              <button aria-pressed="true" data-m="fifo">Orden de llegada</button>
+              <button aria-pressed="false" data-m="opt">Optimizado</button>
+            </div>
+          </div>
+          <div class="read" id="gantt-read"></div>
+        </div>
+        <figure>
+          <svg class="chart" id="f-gantt" role="img" aria-label="Diagrama de Gantt de 14 muestras en 3 estaciones"></svg>
+          <figcaption>Ilustración con datos sintéticos: 14 lotes en 3 estaciones. El modelo productivo agrega fases, capacidades y fechas de entrega.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CARTAS DE CONTROL -->
+<section class="sec" id="control">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-n">02 / CONTROL ESTADÍSTICO</div>
+      <div>
+        <h2>¿Está el proceso analítico bajo control?</h2>
+        <p class="sec-lead">Las cartas de control responden eso con datos. Cada ejemplo usa datos sintéticos: prueba a inyectar un desplazamiento y mira cuándo y cómo se detecta.</p>
+      </div>
+    </div>
+
+    <div class="tabs" role="tablist" id="tabs-ctl">
+      <button class="tab" role="tab" aria-selected="true" data-p="c-xr">Shewhart X̄-R</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="c-lj">Levey-Jennings y Westgard</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="c-ew">EWMA</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="c-cp">Capacidad (Cp, Cpk)</button>
+      <button class="tab" role="tab" aria-selected="false" data-p="c-du">Duplicados</button>
+    </div>
+
+    <!-- X-R -->
+    <div class="pane" id="c-xr">
+      <div class="ctl">
+        <label class="chk"><input type="checkbox" id="xr-zones" checked> Mostrar zonas ±1σ, ±2σ y ±3σ</label>
+        <label class="chk"><input type="checkbox" id="xr-drift"> Inyectar desplazamiento del proceso desde el subgrupo 21</label>
+      </div>
+      <figure>
+        <svg class="chart" id="g-xbar" role="img" aria-label="Carta de control X barra"></svg>
+        <svg class="chart" id="g-r" role="img" aria-label="Carta de control R"></svg>
+        <figcaption>Cobre en mg/L, subgrupos de 4 réplicas. Límites calculados con los primeros 15 subgrupos (fase I) y aplicados al resto (fase II).</figcaption>
+      </figure>
+      <div class="read" id="xr-read"></div>
+      <div class="sig" id="xr-sig"></div>
+      <div class="use">
+        <div><h4>para qué sirve</h4><p>Vigila a la vez el promedio y la dispersión de un proceso que se mide en grupos pequeños, por ejemplo las réplicas de cada lote.</p></div>
+        <div><h4>cuándo usarla</h4><p>Cuando se toman subgrupos de 2 a 5 mediciones bajo las mismas condiciones. Con un solo dato por corrida conviene la carta de individuales o Levey-Jennings.</p></div>
+        <div><h4>cómo se lee</h4><p>Se mira primero la carta R: si la variabilidad no es estable, la carta de promedios no se puede interpretar. Luego se buscan puntos fuera de límites y patrones.</p></div>
+        <div><h4>qué hacer si hay señal</h4><p>Detener la liberación del lote, buscar la causa asignable (calibración, reactivo, analista, equipo) y recalcular límites solo después de corregirla.</p></div>
+      </div>
+    </div>
+
+    <!-- LJ -->
+    <div class="pane" id="c-lj" hidden>
+      <div class="ctl">
+        <label class="chk"><input type="checkbox" id="lj-zones" checked> Mostrar zonas ±1s, ±2s y ±3s</label>
+        <label class="chk"><input type="checkbox" id="lj-drift"> Inyectar error sistemático desde la corrida 27</label>
+      </div>
+      <figure>
+        <svg class="chart" id="g-lj" role="img" aria-label="Carta Levey-Jennings de un material de referencia"></svg>
+        <figcaption>Material de referencia certificado, valor 50,0 mg/L, s = 1,05 de un periodo estable. Rojo: se rechaza la corrida. Ámbar: advertencia.</figcaption>
+      </figure>
+      <div class="read" id="lj-read"></div>
+      <div class="sig" id="lj-sig"></div>
+      <div class="use">
+        <div><h4>para qué sirve</h4><p>Sigue en el tiempo el resultado de un material de referencia o muestra de control, y decide si una corrida analítica se acepta o se rechaza.</p></div>
+        <div><h4>cuándo usarla</h4><p>En cada corrida donde se incluye un material de control. Es la carta base del aseguramiento de la validez de resultados en 17025 (7.7).</p></div>
+        <div><h4>cómo se lee</h4><p>Las reglas de Westgard distinguen el error aleatorio (1₃s, R₄s) del sistemático (2₂s, 4₁s, 10x̄). Un punto entre 2s y 3s es solo advertencia.</p></div>
+        <div><h4>qué hacer si hay señal</h4><p>Error aleatorio: revisar pipeteo, contaminación, inestabilidad del equipo. Error sistemático: revisar calibración, estándares, reactivos y deriva del instrumento.</p></div>
+      </div>
+    </div>
+
+    <!-- EWMA -->
+    <div class="pane" id="c-ew" hidden>
+      <div class="ctl">
+        <label class="chk"><input type="checkbox" id="ew-drift" checked> Inyectar deriva pequeña (0,8s) desde la corrida 21</label>
+      </div>
+      <figure>
+        <svg class="chart" id="g-ew" role="img" aria-label="Carta EWMA"></svg>
+        <figcaption>Línea oscura: estadístico EWMA (λ = 0,2; L = 3). Puntos grises: datos individuales. La deriva de 0,8s es difícil de ver a ojo.</figcaption>
+      </figure>
+      <div class="read" id="ew-read"></div>
+      <div class="sig" id="ew-sig"></div>
+      <div class="use">
+        <div><h4>para qué sirve</h4><p>Detecta desplazamientos pequeños y sostenidos, del orden de 0,5 a 1,5 desviaciones, que una carta Shewhart tarda mucho en mostrar.</p></div>
+        <div><h4>cuándo usarla</h4><p>Cuando la precisión es alta y el riesgo es la deriva lenta: desgaste de un tubo, envejecimiento de un estándar, cambios graduales de calibración.</p></div>
+        <div><h4>cómo se lee</h4><p>Cada punto pondera el dato nuevo con la historia. Si la línea suavizada cruza los límites, hay un corrimiento aunque cada dato individual parezca normal.</p></div>
+        <div><h4>qué hacer si hay señal</h4><p>Revisar tendencia en calibración, mantenimiento y lotes de reactivos. Se usa junto con Shewhart, no en lugar de ella.</p></div>
+      </div>
+    </div>
+
+    <!-- CAPACIDAD -->
+    <div class="pane" id="c-cp" hidden>
+      <div class="ctl">
+        <span class="rng">LSL <input type="range" id="cp-lsl" min="36" max="46" step="0.5" value="40"><output id="cp-lsl-o">40</output></span>
+        <span class="rng">USL <input type="range" id="cp-usl" min="50" max="60" step="0.5" value="55"><output id="cp-usl-o">55</output></span>
+        <span class="rng">Desplazar media <input type="range" id="cp-sh" min="-3" max="3" step="0.1" value="0"><output id="cp-sh-o">0</output></span>
+      </div>
+      <figure>
+        <svg class="chart" id="g-cp" role="img" aria-label="Histograma con curva normal y límites de especificación"></svg>
+        <figcaption>80 mediciones sintéticas (mg/L). Las barras rojas quedan fuera de especificación; la curva es la normal ajustada.</figcaption>
+      </figure>
+      <div class="read" id="cp-read"></div>
+      <div class="sig" id="cp-sig"></div>
+      <div class="use">
+        <div><h4>para qué sirve</h4><p>Responde si el método cumple la especificación con margen: compara el ancho de la especificación con la variabilidad real del proceso.</p></div>
+        <div><h4>cuándo usarla</h4><p>En validación de métodos y en aceptación de lotes con límites de especificación definidos. Requiere un proceso estable: primero la carta de control.</p></div>
+        <div><h4>cómo se lee</h4><p>Cp mide el potencial; Cpk descuenta el descentrado. Una diferencia grande entre ambos indica que la media se corrió. Con σ global se reportan Pp y Ppk, como aquí.</p></div>
+        <div><h4>qué hacer si hay señal</h4><p>Con Cpk bajo, primero centrar el proceso y luego reducir la variabilidad. Referencia habitual: Cpk ≥ 1,33 capaz; entre 1,00 y 1,33 marginal.</p></div>
+      </div>
+    </div>
+
+    <!-- DUPLICADOS -->
+    <div class="pane" id="c-du" hidden>
+      <div class="ctl">
+        <span class="rng">Límite RPD <input type="range" id="du-lim" min="4" max="20" step="1" value="10"><output id="du-lim-o">10%</output></span>
+        <label class="chk"><input type="checkbox" id="du-bad"> Inyectar contaminación en 3 pares</label>
+      </div>
+      <figure>
+        <div class="two">
+          <svg class="chart" id="g-du1" role="img" aria-label="Dispersión de duplicados"></svg>
+          <svg class="chart" id="g-du2" role="img" aria-label="RPD por par de duplicados"></svg>
+        </div>
+        <figcaption>30 pares original/duplicado (mg/L). RPD = 200·|A−B| / (A+B).</figcaption>
+      </figure>
+      <div class="read" id="du-read"></div>
+      <div class="sig" id="du-sig"></div>
+      <div class="use">
+        <div><h4>para qué sirve</h4><p>Mide la precisión de la preparación y del análisis comparando una muestra con su propio duplicado.</p></div>
+        <div><h4>cuándo usarla</h4><p>En cada lote, con una frecuencia fijada en el plan de QC del laboratorio y distinguiendo duplicado de campo, de preparación y analítico.</p></div>
+        <div><h4>cómo se lee</h4><p>En la dispersión, los puntos deben seguir la diagonal. En las barras, cada par queda bajo el límite de aceptación definido para el analito.</p></div>
+        <div><h4>qué hacer si hay señal</h4><p>Revisar homogeneización, contaminación cruzada y pesaje. Si varios pares fallan en el mismo lote, reanalizar el lote completo.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NOSOTROS -->
+<section class="sec" id="nosotros">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-n">03 / NOSOTROS</div>
+      <div><h2>Entendemos el lenguaje del laboratorio y el del código</h2></div>
+    </div>
+    <div class="about">
+      <div>
+        <p>Somos un equipo con formación en química analítica, ciencia de datos y desarrollo de software, dedicado a la industria minera y a los laboratorios de Chile y Latinoamérica.</p>
+        <p>Por eso construimos sistemas que el laboratorio realmente usa, y no sistemas que terminan en el cajón.</p>
       </div>
       <div>
-        <div style="margin-bottom:1.5rem">
-          <p style="font-size:0.8rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem">Equipo</p>
-          <div style="display:flex;flex-direction:column;gap:1rem">
-            <div class="team-card" style="flex-direction:column;align-items:flex-start;gap:0.75rem">
-              <div style="display:flex;align-items:center;gap:0.75rem">
-                <div class="team-avatar">⏱️</div>
-                <div><div class="team-name">+25 años de experiencia</div></div>
-              </div>
-              <div style="font-size:0.85rem;color:var(--text2);line-height:1.6">
-                Trayectoria en laboratorios geoquímicos y metalúrgicos de las industrias del <strong style="color:var(--text)">cobre y litio, petróleo y gas, medio ambiente, salud pública y aduaneros</strong>.
-              </div>
-            </div>
-            <div class="team-card" style="flex-direction:column;align-items:flex-start;gap:0.75rem">
-              <div style="display:flex;align-items:center;gap:0.75rem">
-                <div class="team-avatar">🗄️</div>
-                <div><div class="team-name">Expertos en integración de sistemas</div></div>
-              </div>
-              <div style="font-size:0.85rem;color:var(--text2);line-height:1.6">
-                Administración de bases de datos relacionales e integración con plataformas como <strong style="color:var(--text)">PI System, SAP, Met Intelligence y LIMS</strong>.
-              </div>
-            </div>
-          </div>
-        </div>
-        <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem">
-          <p style="font-size:0.8rem;color:var(--text3);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:1px">Stack tecnológico</p>
-          <div style="display:flex;flex-wrap:wrap;gap:8px">
-            <span class="tag" style="color:var(--text2)">Python</span><span class="tag" style="color:var(--text2)">PostgreSQL</span><span class="tag" style="color:var(--text2)">SQL Server</span><span class="tag" style="color:var(--text2)">Oracle</span><span class="tag" style="color:var(--text2)">LIMS</span><span class="tag" style="color:var(--text2)">Machine Learning</span><span class="tag" style="color:var(--text2)">Streamlit</span><span class="tag" style="color:var(--text2)">Plotly</span><span class="tag" style="color:var(--text2)">GitHub Actions</span><span class="tag" style="color:var(--text2)">PI System</span><span class="tag" style="color:var(--text2)">SAP</span><span class="tag" style="color:var(--text2)">pandas</span><span class="tag" style="color:var(--text2)">openpyxl</span>
-          </div>
-        </div>
+        <h3 style="margin-top:0">Trayectoria</h3>
+        <p>Más de 25 años en laboratorios geoquímicos y metalúrgicos de las industrias del cobre y litio, petróleo y gas, medio ambiente, salud pública y aduanas.</p>
+        <h3>Integración de sistemas</h3>
+        <p>Administración de bases de datos relacionales e integración con PI System, SAP, Met Intelligence y LIMS.</p>
+        <h3>Herramientas</h3>
+        <div class="tags">Python<i>/</i>PostgreSQL<i>/</i>SQL Server<i>/</i>Oracle<i>/</i>LIMS<i>/</i>Machine Learning<i>/</i>Streamlit<i>/</i>Plotly<i>/</i>GitHub Actions<i>/</i>PI System<i>/</i>SAP<i>/</i>pandas<i>/</i>openpyxl<i>/</i>Pyomo</div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- CONTACTO -->
-<section id="contacto">
-  <div class="section-inner">
-    <div class="section-eyebrow">Contacto</div>
-    <div class="contact-grid">
+<section class="sec" id="contacto">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="sec-n">04 / CONTACTO</div>
+      <div><h2>Cuéntanos qué necesita resolver tu laboratorio</h2></div>
+    </div>
+    <div class="contact">
       <div>
-        <h2>Conversemos sobre tu proyecto</h2>
-        <p style="color:var(--text2);line-height:1.7;margin-bottom:2rem">Cuéntanos el desafío de datos o laboratorio que enfrentas. En 48 horas te respondemos con una propuesta inicial sin costo.</p>
-        <div class="contact-info">
-          <div class="contact-item">
-            <div class="contact-icon">📧</div>
-            <div><div class="contact-label">Email</div><div class="contact-val">psantiba@gmail.com</div></div>
-          </div>
-          <div class="contact-item">
-            <div class="contact-icon">📱</div>
-            <div><div class="contact-label">WhatsApp</div><div class="contact-val">+56 9 7764 2192</div></div>
-          </div>
-          <div class="contact-item">
-            <div class="contact-icon">📍</div>
-            <div><div class="contact-label">Ubicación</div><div class="contact-val">Viña del Mar, Chile · Servicio presencial y remoto en Latinoamérica</div></div>
-          </div>
+        <p style="color:var(--ink2);max-width:46ch">Describe el desafío de datos o de laboratorio. En 48 horas respondemos con una propuesta inicial sin costo.</p>
+        <!-- DATOS DE CONTACTO: editar aquí y en el mensaje de error del formulario (script) -->
+        <div class="cinfo">
+          <div><span>CORREO</span><a href="mailto:vprouteau@metquant.cl" style="color:var(--ink)">vprouteau@metquant.cl</a></div>
+          <div><span>WHATSAPP</span><a href="https://wa.me/56977524877" style="color:var(--ink)">+56 9 7752 4877</a></div>
+          <div><span>UBICACIÓN</span>Santiago, Chile. Servicio presencial y remoto en Latinoamérica</div>
         </div>
       </div>
-      <div>
-        <form id="contact-form">
-        <div class="form-group">
-          <label>Nombre y empresa</label>
-          <input type="text" name="name" placeholder="Nombre — Empresa" required>
-        </div>
-        <div class="form-group">
-          <label>Correo electrónico</label>
-          <input type="email" name="email" placeholder="correo@empresa.cl" required>
-        </div>
-        <div class="form-group">
-          <label>Tipo de proyecto</label>
-          <select name="tipo_proyecto">
+      <form id="contact-form">
+        <div class="g"><label for="f-name">NOMBRE Y EMPRESA</label><input type="text" id="f-name" name="name" placeholder="Nombre — Empresa" required></div>
+        <div class="g"><label for="f-mail">CORREO ELECTRÓNICO</label><input type="email" id="f-mail" name="email" placeholder="correo@empresa.cl" required></div>
+        <div class="g"><label for="f-tipo">TIPO DE PROYECTO</label>
+          <select id="f-tipo" name="tipo_proyecto">
             <option value="">Selecciona una categoría</option>
+            <option>Data pipelines</option>
+            <option>Diseño y administración de bases de datos</option>
+            <option>Integración de instrumentos</option>
+            <option>Desarrollo de reportes</option>
+            <option>Cumplimiento ISO 17025 / AMIRA P754</option>
             <option>Control de calidad analítico (QC/SPC)</option>
-            <option>Dashboard e informes automatizados</option>
-            <option>Integración LIMS / base de datos</option>
-            <option>Digitalización de laboratorios analítica</option>
+            <option>Optimización de laboratorios</option>
             <option>Otro</option>
           </select>
         </div>
-        <div class="form-group">
-          <label>Descripción del desafío</label>
-          <textarea name="message" placeholder="Cuéntanos brevemente qué necesitas resolver..." required></textarea>
-        </div>
+        <div class="g"><label for="f-msg">DESCRIPCIÓN DEL DESAFÍO</label><textarea id="f-msg" name="message" placeholder="Cuéntanos brevemente qué necesitas resolver..." required></textarea></div>
         <input type="hidden" name="access_key" value="77abf4c6-7386-49d9-a1e9-3b72db0e2048">
         <input type="hidden" name="subject" value="Nuevo requerimiento desde metquant.cl">
         <input type="hidden" name="from_name" value="metQuant Web">
-        <input type="checkbox" name="botcheck" style="display:none">
-        <button type="submit" class="btn-submit" id="submit-btn">Enviar mensaje →</button>
-        <p id="form-msg" style="margin-top:0.75rem;font-size:0.85rem;display:none"></p>
-      </div>
+        <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+        <button type="submit" class="send" id="submit-btn">Enviar mensaje</button>
+        <p id="form-msg"></p>
+      </form>
     </div>
   </div>
 </section>
+</main>
 
 <footer>
-  <div class="footer-inner">
-    <div class="footer-copy">© 2025 metQuant. Todos los derechos reservados.</div>
-    <div class="footer-links">
-      <a href="#inicio">Inicio</a>
-      <a href="#servicios">Servicios</a>
-      <a href="#galeria">Casos</a>
-      <a href="#contacto">Contacto</a>
-    </div>
+  <div class="wrap">
+    <div>© 2026 metQuant. Todos los derechos reservados.</div>
+    <div><a href="#inicio">Inicio</a><a href="#servicios">Servicios</a><a href="#control">Cartas de control</a><a href="#contacto">Contacto</a></div>
   </div>
 </footer>
 
 <script>
-// COUNTER ANIMATION
-function animateCounter(id, target, suffix, duration) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  const suffix2 = el.innerHTML.includes('↑') ? ' <span>↑</span>' : '+';
-  let start = 0;
-  const step = target / (duration / 16);
-  const timer = setInterval(() => {
-    start += step;
-    if (start >= target) { start = target; clearInterval(timer); }
-    el.innerHTML = Math.floor(start) + suffix + (id !== 'm4' ? ' <span>↑</span>' : '+');
-  }, 16);
-}
-window.addEventListener('load', () => {
-  setTimeout(() => {
-    animateCounter('m1', 70, '+', 1800);
-    animateCounter('m2', 94, '%', 1600);
-    animateCounter('m3', 35, '+', 1400);
-    animateCounter('m4', 25, '', 1200);
-  }, 400);
-});
+(function(){
+'use strict';
+var NS='http://www.w3.org/2000/svg';
+function $(s,r){return (r||document).querySelector(s)}
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))}
+function E(tag,attrs,parent,text){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(text!==undefined)e.textContent=text;if(parent)parent.appendChild(e);return e}
+function clear(s){while(s.firstChild)s.removeChild(s.firstChild)}
+function f(x,d){return Number(x).toFixed(d===undefined?2:d).replace('.',',')}
+function mean(a){return a.reduce(function(s,x){return s+x},0)/a.length}
+function sd(a){var m=mean(a);return Math.sqrt(a.reduce(function(s,x){return s+(x-m)*(x-m)},0)/(a.length-1))}
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function gauss(r){var u=0,v=0;while(!u)u=r();while(!v)v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+function erf(x){var s=x<0?-1:1;x=Math.abs(x);var t=1/(1+0.3275911*x);var y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x);return s*y}
+function Phi(z){return 0.5*(1+erf(z/Math.SQRT2))}
+function readout(id,arr){$(id).innerHTML=arr.map(function(a){return '<div><b class="'+(a[2]||'')+'">'+a[1]+'</b><span>'+a[0]+'</span></div>'}).join('')}
 
-// GALLERY DATA
-const galleryItems = [
-  {cat:'qc',title:'Carta Levey-Jennings Cu/Fe',desc:'Control multielemento para laboratorio de exploración, con alertas Westgard automáticas.',icon:'📈'},
-  {cat:'dashboard',title:'Dashboard ejecutivo de producción',desc:'KPIs operacionales de planta en tiempo real, accesible desde cualquier dispositivo.',icon:'🖥️'},
-  {cat:'lims',title:'Data pipeline desde repositorios de metadata',desc:'Pipeline desde planillas Excel, repositorios de metadata y sistemas fuente hacia bases de datos normalizadas, APIs y plataformas de destino.',icon:'📬'},
-  {cat:'quimica',title:'Validación método ICP-OES',desc:'Cálculo de exactitud, precisión, LD y LC para métodos de análisis de suelos y pulpas.',icon:'⚗️'},
-  {cat:'qc',title:'Índice Cpk por campaña',desc:'Seguimiento de capacidad de proceso por lote, método y analista a lo largo del tiempo.',icon:'📊'},
-  {cat:'dashboard',title:'Informe automático PDF',desc:'Generación programada de informes mensuales de QC directamente desde el servidor.',icon:'📄'},
-  {cat:'lims',title:'Integración sistemas LIMS, instrumentos y plataformas',desc:'Integración entre sistemas LIMS, instrumentos analíticos y plataformas como eTruck y SAP para trazabilidad y flujo automático de datos.',icon:'🔗'},
-  {cat:'quimica',title:'Análisis de blancos y estándares',desc:'Trazabilidad de materiales de referencia certificados y detección de contaminación.',icon:'🧪'},
-];
-
-let activeFilter = 'todos';
-function filterGallery(cat, btn) {
-  activeFilter = cat;
-  document.querySelectorAll('.gtab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderGallery();
+/* ---------- pestañas ---------- */
+function tabs(rootId){
+  var root=$(rootId),btns=$$('[role=tab]',root);
+  btns.forEach(function(b){b.addEventListener('click',function(){
+    btns.forEach(function(x){x.setAttribute('aria-selected',x===b?'true':'false');$('#'+x.dataset.p).hidden=(x!==b)});
+  })});
 }
-function renderGallery() {
-  const grid = document.getElementById('gallery-grid');
-  const items = activeFilter === 'todos' ? galleryItems : galleryItems.filter(i => i.cat === activeFilter);
-  grid.innerHTML = items.map(item => `
-    <div class="gallery-item">
-      <div class="gallery-img">
-        <div class="gallery-img-icon">${item.icon}</div>
-        <div class="gallery-img-label">PNG del caso de uso aquí</div>
-      </div>
-      <div class="gallery-info">
-        <h4>${item.title}</h4>
-        <p>${item.desc}</p>
-      </div>
-    </div>
-  `).join('');
-}
-renderGallery();
+tabs('#tabs-serv');tabs('#tabs-ctl');
 
-// DEMO CHART
-function renderDemoChart() {
-  const chart = document.getElementById('demo-chart');
-  if (!chart) return;
-  const vals = [65,72,68,80,75,71,69,78,82,74,70,76,73,79,77,68,83,71,75,80];
-  chart.innerHTML = vals.map(v => {
-    const h = Math.round((v/100) * 120);
-    const color = v > 80 ? '#ef4444' : v > 75 ? '#f59e0b' : '#F0A500';
-    return `<div class="bar" style="height:${h}px;background:${color};opacity:0.75"></div>`;
-  }).join('');
+/* ---------- gráfico de serie genérico ---------- */
+function seriesChart(svg,o){
+  var W=760,H=o.h||260,ml=50,mr=70,mt=24,mb=26;
+  clear(svg);svg.setAttribute('viewBox','0 0 '+W+' '+H);
+  var n=o.y.length,all=o.y.slice();
+  (o.lines||[]).forEach(function(l){all.push(l.v)});
+  (o.curves||[]).forEach(function(c){c.y.forEach(function(v){all.push(v)})});
+  (o.dots||[]).forEach(function(v){all.push(v)});
+  var lo=Math.min.apply(null,all),hi=Math.max.apply(null,all),pad=(hi-lo)*0.06||1;
+  lo-=pad;hi+=pad;if(o.ymin!==undefined)lo=o.ymin;
+  function sx(i){return ml+i*(W-ml-mr)/(n-1)}
+  function sy(v){return mt+(1-(v-lo)/(hi-lo))*(H-mt-mb)}
+  (o.bands||[]).forEach(function(b){var y1=sy(Math.max(b.a,b.b)),y2=sy(Math.min(b.a,b.b));E('rect',{x:ml,y:y1,width:W-ml-mr,height:y2-y1,class:b.cls},svg)});
+  for(var k=0;k<=4;k++){var v=lo+(hi-lo)*k/4,y=sy(v);E('line',{x1:ml,x2:W-mr,y1:y,y2:y,class:'grid'},svg);E('text',{x:ml-6,y:y+3.5,'text-anchor':'end',class:'ax'},svg,f(v,1))}
+  var ev=o.xevery||5;for(var i=0;i<n;i+=1){if((i+1)%ev===0||i===0)E('text',{x:sx(i),y:H-8,'text-anchor':'middle',class:'ax'},svg,String(i+1))}
+  if(o.ylabel)E('text',{x:ml,y:12,class:'ax'},svg,o.ylabel);
+  (o.lines||[]).forEach(function(l){var y=sy(l.v);E('line',{x1:ml,x2:W-mr,y1:y,y2:y,class:l.cls},svg);if(l.label)E('text',{x:W-mr+6,y:y+3.5,class:l.cls==='ln-bad'?'lbl-b':(l.cls==='ln-warn'?'lbl-w':'lbl')},svg,l.label)});
+  if(o.split){var xs=(sx(o.split-1)+sx(o.split))/2;E('line',{x1:xs,x2:xs,y1:mt-6,y2:H-mb,class:'ln-split'},svg);E('text',{x:xs-6,y:mt-8,'text-anchor':'end',class:'ax'},svg,'fase I: límites');E('text',{x:xs+6,y:mt-8,class:'ax'},svg,'fase II: monitoreo')}
+  (o.dots||[]).forEach(function(v,i){E('circle',{cx:sx(i),cy:sy(v),r:2.2,class:'dot'},svg)});
+  (o.curves||[]).forEach(function(c){var d=c.y.map(function(v,i){return (i?'L':'M')+sx(i).toFixed(1)+' '+sy(v).toFixed(1)}).join('');E('path',{d:d,class:'ln-bad',fill:'none'},svg)});
+  var d=o.y.map(function(v,i){return (i?'L':'M')+sx(i).toFixed(1)+' '+sy(v).toFixed(1)}).join('');
+  E('path',{d:d,class:o.heavy?'ser2':'ser'},svg);
+  o.y.forEach(function(v,i){var s=o.status?o.status[i]:0;var c=E('circle',{cx:sx(i),cy:sy(v),r:s===2?4.6:3.4,class:'pt-'+s},svg);E('title',{},c,'#'+(i+1)+': '+f(v,2)+(o.tips&&o.tips[i]?' — '+o.tips[i]:''))});
+  return {sx:sx,sy:sy,lo:lo,hi:hi,W:W,H:H,ml:ml,mr:mr,mt:mt,mb:mb};
 }
-renderDemoChart();
+function zoneBands(c,s){return [{a:c+2*s,b:c+3*s,cls:'bd-a'},{a:c-3*s,b:c-2*s,cls:'bd-a'},{a:c+s,b:c+2*s,cls:'bd-b'},{a:c-2*s,b:c-s,cls:'bd-b'},{a:c-s,b:c+s,cls:'bd-c'}]}
+function zoneLines(c,s){return [{v:c+2*s,cls:'ln-warn',label:''},{v:c-2*s,cls:'ln-warn',label:''}]}
 
-// FORM — Web3Forms
-document.getElementById('contact-form').addEventListener('submit', async function(e) {
+/* ---------- reglas ---------- */
+function cnt(a,fn){return a.filter(fn).length}
+function rulesWE(z){return z.map(function(_,i){
+  var r=[],sev=0;
+  if(Math.abs(z[i])>3){r.push('1 punto fuera de ±3σ');sev=2}
+  if(i>=2){var w=z.slice(i-2,i+1);
+    if(z[i]>2&&cnt(w,function(v){return v>2})>=2||z[i]<-2&&cnt(w,function(v){return v<-2})>=2){r.push('2 de 3 puntos más allá de ±2σ');sev=2}}
+  if(i>=4){var w5=z.slice(i-4,i+1);
+    if(z[i]>1&&cnt(w5,function(v){return v>1})>=4||z[i]<-1&&cnt(w5,function(v){return v<-1})>=4){r.push('4 de 5 puntos más allá de ±1σ');sev=Math.max(sev,1)}}
+  if(i>=7){var w8=z.slice(i-7,i+1);
+    if(cnt(w8,function(v){return v>0})===8||cnt(w8,function(v){return v<0})===8){r.push('8 puntos seguidos del mismo lado');sev=Math.max(sev,1)}}
+  return {sev:sev,rules:r}})}
+function rulesWG(z){return z.map(function(_,i){
+  var r=[],sev=0;
+  if(Math.abs(z[i])>3){r.push('1₃s');sev=2}else if(Math.abs(z[i])>2){r.push('1₂s');sev=1}
+  if(i>=1){
+    if(z[i]>2&&z[i-1]>2||z[i]<-2&&z[i-1]<-2){r.push('2₂s');sev=2}
+    if(Math.abs(z[i]-z[i-1])>4){r.push('R₄s');sev=2}}
+  if(i>=3){var w=z.slice(i-3,i+1);if(cnt(w,function(v){return v>1})===4||cnt(w,function(v){return v<-1})===4){r.push('4₁s');sev=2}}
+  if(i>=9){var w10=z.slice(i-9,i+1);if(cnt(w10,function(v){return v>0})===10||cnt(w10,function(v){return v<0})===10){r.push('10x̄');sev=2}}
+  return {sev:sev,rules:r}})}
+function summary(ev){var m={};ev.forEach(function(e){e.rules.forEach(function(r){m[r]=(m[r]||0)+1})});var k=Object.keys(m);return k.length?k.map(function(r){return r+' ×'+m[r]}).join('   '):'Sin reglas activadas.'}
+function nsev(ev,s){return ev.filter(function(e){return e.sev===s}).length}
+
+/* ---------- X̄-R ---------- */
+function renderXR(){
+  var drift=$('#xr-drift').checked,zones=$('#xr-zones').checked;
+  var r=rng(11),n=4,m=30,mu=47.3,s=1.84,p1=15,A2=0.729,D4=2.282,d2=2.059;
+  var xb=[],R=[];
+  for(var i=0;i<m;i++){var sh=(drift&&i>=20)?1.2*s:0,g=[];for(var j=0;j<n;j++)g.push(mu+sh+gauss(r)*s);xb.push(mean(g));R.push(Math.max.apply(null,g)-Math.min.apply(null,g))}
+  var xbb=mean(xb.slice(0,p1)),rb=mean(R.slice(0,p1)),sx=A2*rb/3,ucl=xbb+3*sx,lcl=xbb-3*sx;
+  var z=xb.map(function(v){return (v-xbb)/sx}),ev=rulesWE(z);
+  var lines=[{v:ucl,cls:'ln-bad',label:'LCS '+f(ucl)},{v:xbb,cls:'ln-cl',label:'X̿ '+f(xbb)},{v:lcl,cls:'ln-bad',label:'LCI '+f(lcl)}];
+  if(zones)lines=lines.concat(zoneLines(xbb,sx));
+  seriesChart($('#g-xbar'),{y:xb,lines:lines,bands:zones?zoneBands(xbb,sx):[],status:ev.map(function(e){return e.sev}),tips:ev.map(function(e){return e.rules.join('; ')}),split:p1,ylabel:'X̄ (mg/L)',h:250});
+  var uclR=D4*rb,stR=R.map(function(v){return v>uclR?2:0});
+  seriesChart($('#g-r'),{y:R,lines:[{v:uclR,cls:'ln-bad',label:'LCS '+f(uclR)},{v:rb,cls:'ln-cl',label:'R̄ '+f(rb)}],status:stR,split:p1,ylabel:'R (mg/L)',h:170,ymin:0});
+  var nb=nsev(ev,2)+nsev(ev,1);
+  readout('#xr-read',[['media global X̿',f(xbb)],['rango medio R̄',f(rb)],['σ estimada (R̄/d₂)',f(rb/d2)],['LCI / LCS',f(lcl,1)+' / '+f(ucl,1)],['subgrupos con señal',String(nb),nb?'v-bad':'v-ok']]);
+  $('#xr-sig').textContent=summary(ev)+(stR.some(function(v){return v})?'   Carta R: variabilidad fuera de límite.':'');
+}
+
+/* ---------- Levey-Jennings ---------- */
+function renderLJ(){
+  var drift=$('#lj-drift').checked,zones=$('#lj-zones').checked;
+  var r=rng(5),N=40,mu=50,s=1.05,x=[];
+  for(var i=0;i<N;i++)x.push(mu+gauss(r)*s*0.9);
+  x[13]=mu+2.3*s;
+  if(drift)for(i=26;i<N;i++)x[i]+=1.2*s;
+  var z=x.map(function(v){return (v-mu)/s}),ev=rulesWG(z);
+  var lines=[{v:mu+3*s,cls:'ln-bad',label:'+3s '+f(mu+3*s,1)},{v:mu,cls:'ln-cl',label:'media '+f(mu,1)},{v:mu-3*s,cls:'ln-bad',label:'−3s '+f(mu-3*s,1)}];
+  if(zones)lines=lines.concat(zoneLines(mu,s));
+  seriesChart($('#g-lj'),{y:x,lines:lines,bands:zones?zoneBands(mu,s):[],status:ev.map(function(e){return e.sev}),tips:ev.map(function(e){return e.rules.join(', ')}),ylabel:'mg/L',h:290,xevery:5});
+  var m=mean(x),bias=(m-mu)/mu*100,cv=sd(x)/m*100;
+  readout('#lj-read',[['corridas',String(N)],['sesgo vs certificado',(bias>=0?'+':'')+f(bias,1)+'%',Math.abs(bias)>2?'v-warn':'v-ok'],['CV%',f(cv,1)+'%'],['rechazos',String(nsev(ev,2)),nsev(ev,2)?'v-bad':'v-ok'],['advertencias',String(nsev(ev,1)),nsev(ev,1)?'v-warn':'v-ok']]);
+  $('#lj-sig').textContent=summary(ev);
+}
+
+/* ---------- EWMA ---------- */
+function renderEW(){
+  var drift=$('#ew-drift').checked;
+  var r=rng(1),N=40,mu=50,s=1.05,lam=0.2,L=3,x=[];
+  for(var i=0;i<N;i++)x.push(mu+gauss(r)*s+(drift&&i>=20?0.8*s:0));
+  var zt=[],prev=mu;
+  x.forEach(function(v){prev=lam*v+(1-lam)*prev;zt.push(prev)});
+  var up=[],lo=[],st=[];
+  for(i=0;i<N;i++){var w=L*s*Math.sqrt(lam/(2-lam)*(1-Math.pow(1-lam,2*(i+1))));up.push(mu+w);lo.push(mu-w);st.push(zt[i]>mu+w||zt[i]<mu-w?2:0)}
+  seriesChart($('#g-ew'),{y:zt,dots:x,lines:[{v:mu,cls:'ln-cl',label:'objetivo '+f(mu,1)}],curves:[{y:up},{y:lo}],status:st,ylabel:'mg/L',h:270,heavy:true});
+  var first=st.indexOf(2),shew=0;x.forEach(function(v){if(Math.abs(v-mu)>3*s)shew++});
+  readout('#ew-read',[['corridas',String(N)],['primera señal EWMA',first<0?'—':'corrida '+(first+1),first<0?'v-ok':'v-bad'],['puntos con señal',String(nsev(st.map(function(v){return {sev:v}}),2))],['fuera de ±3s (Shewhart)',String(shew),shew?'v-bad':'v-ok']]);
+  $('#ew-sig').textContent=drift?(first<0?'La deriva no alcanzó el límite en este periodo.':'Deriva inyectada en la corrida 21; EWMA señala en la corrida '+(first+1)+'. '+(shew?'Shewhart individual: '+shew+' punto(s) fuera de ±3s.':'Shewhart individual no señala nada en todo el periodo.')):'Proceso estable: el estadístico oscila alrededor del objetivo.';
+}
+
+/* ---------- Capacidad ---------- */
+var cpBase=(function(){var r=rng(3),a=[];for(var i=0;i<80;i++)a.push(47.3+gauss(r)*1.84);return a})();
+function renderCP(){
+  var lsl=+$('#cp-lsl').value,usl=+$('#cp-usl').value,sh=+$('#cp-sh').value;
+  $('#cp-lsl-o').textContent=lsl;$('#cp-usl-o').textContent=usl;$('#cp-sh-o').textContent=(sh>0?'+':'')+sh;
+  var d=cpBase.map(function(v){return v+sh}),m=mean(d),s=sd(d);
+  var pp=(usl-lsl)/(6*s),ppk=Math.min(usl-m,m-lsl)/(3*s);
+  var out=(Phi((lsl-m)/s)+1-Phi((usl-m)/s))*1e6;
+  var svg=$('#g-cp'),W=760,H=270,ml=40,mr=20,mt=22,mb=30,x0=34,x1=60,bw=0.8,nb=Math.ceil((x1-x0)/bw);
+  clear(svg);svg.setAttribute('viewBox','0 0 '+W+' '+H);
+  var bins=[];for(var i=0;i<nb;i++)bins.push(0);
+  d.forEach(function(v){var k=Math.floor((v-x0)/bw);if(k>=0&&k<nb)bins[k]++});
+  var ymax=Math.max.apply(null,bins.concat([d.length*bw/(s*Math.sqrt(2*Math.PI))]))*1.12;
+  function sx(v){return ml+(v-x0)/(x1-x0)*(W-ml-mr)}
+  function sy(v){return mt+(1-v/ymax)*(H-mt-mb)}
+  for(var t=0;t<=4;t++){var yv=ymax*t/4;E('line',{x1:ml,x2:W-mr,y1:sy(yv),y2:sy(yv),class:'grid'},svg);E('text',{x:ml-6,y:sy(yv)+3.5,'text-anchor':'end',class:'ax'},svg,String(Math.round(yv)))}
+  for(var xv=x0;xv<=x1;xv+=2)E('text',{x:sx(xv),y:H-10,'text-anchor':'middle',class:'ax'},svg,String(xv));
+  bins.forEach(function(c,k){var a=x0+k*bw,cx=a+bw/2,bad=cx<lsl||cx>usl;if(c>0)E('rect',{x:sx(a)+0.5,y:sy(c),width:sx(a+bw)-sx(a)-1,height:sy(0)-sy(c),class:bad?'bar-out':'bar-in'},svg)});
+  var pth='';for(var xv2=x0;xv2<=x1;xv2+=0.2){var pdf=Math.exp(-0.5*Math.pow((xv2-m)/s,2))/(s*Math.sqrt(2*Math.PI))*d.length*bw;pth+=(pth?'L':'M')+sx(xv2).toFixed(1)+' '+sy(pdf).toFixed(1)}
+  E('path',{d:pth,class:'curve'},svg);
+  [[lsl,'LSL '+lsl,'end'],[usl,'USL '+usl,'start']].forEach(function(a){E('line',{x1:sx(a[0]),x2:sx(a[0]),y1:mt-6,y2:H-mb,class:'ln-bad'},svg);E('text',{x:sx(a[0])+(a[2]==='end'?-5:5),y:mt+2,'text-anchor':a[2],class:'lbl-b'},svg,a[1])});
+  E('line',{x1:sx(m),x2:sx(m),y1:mt,y2:H-mb,class:'ln-cl','stroke-dasharray':'3 3'},svg);
+  E('text',{x:sx(m)+5,y:mt+16,class:'lbl'},svg,'media '+f(m,1));
+  var cls=ppk>=1.33?'v-ok':(ppk>=1?'v-warn':'v-bad');
+  readout('#cp-read',[['Pp',f(pp)],['Ppk',f(ppk),cls],['media / σ',f(m,1)+' / '+f(s)],['fuera de espec. esperado',Math.round(out).toLocaleString('es-CL')+' ppm',out>1000?'v-bad':'v-ok'],['veredicto',ppk>=1.33?'capaz':(ppk>=1?'marginal':'no capaz'),cls]]);
+  $('#cp-sig').textContent=(pp-ppk>0.15?'Pp supera a Ppk en '+f(pp-ppk)+': el proceso está descentrado respecto de la especificación.':'Proceso razonablemente centrado en la especificación.');
+}
+
+/* ---------- Duplicados ---------- */
+var duBase=(function(){var r=rng(17),o=[],d=[];for(var i=0;i<30;i++){var a=30+r()*60;o.push(a);d.push(a*(1+gauss(r)*0.028))}return {o:o,d:d}})();
+function renderDU(){
+  var L=+$('#du-lim').value,bad=$('#du-bad').checked;$('#du-lim-o').textContent=L+'%';
+  var o=duBase.o.slice(),d=duBase.d.slice();
+  if(bad){[4,13,22].forEach(function(i,k){d[i]=o[i]*(1+[0.17,-0.14,0.22][k])})}
+  var rpd=o.map(function(a,i){return 200*Math.abs(a-d[i])/(a+d[i])});
+  var s1=$('#g-du1'),W=380,H=300,ml=40,mr=14,mt=16,mb=34;clear(s1);s1.setAttribute('viewBox','0 0 '+W+' '+H);
+  var lo=25,hi=100;function sx(v){return ml+(v-lo)/(hi-lo)*(W-ml-mr)}function sy(v){return mt+(1-(v-lo)/(hi-lo))*(H-mt-mb)}
+  for(var t=lo;t<=hi;t+=25){E('line',{x1:ml,x2:W-mr,y1:sy(t),y2:sy(t),class:'grid'},s1);E('text',{x:ml-6,y:sy(t)+3.5,'text-anchor':'end',class:'ax'},s1,String(t));E('text',{x:sx(t),y:H-18,'text-anchor':'middle',class:'ax'},s1,String(t))}
+  var kU=(200+L)/(200-L),kL=(200-L)/(200+L);
+  E('polygon',{points:[sx(lo),sy(lo*kU),sx(hi),sy(Math.min(hi,hi*kU)),sx(hi),sy(hi*kL),sx(lo),sy(lo*kL)].join(','),class:'bd-c'},s1);
+  E('line',{x1:sx(lo),y1:sy(lo),x2:sx(hi),y2:sy(hi),class:'ln-cl'},s1);
+  o.forEach(function(a,i){var st=rpd[i]>L?2:0;var c=E('circle',{cx:sx(a),cy:sy(Math.min(hi,d[i])),r:st?4.4:3.2,class:'pt-'+st},s1);E('title',{},c,'Par '+(i+1)+': '+f(a,1)+' / '+f(d[i],1)+' — RPD '+f(rpd[i],1)+'%')});
+  E('text',{x:ml,y:10,class:'ax'},s1,'duplicado (mg/L)');E('text',{x:W-mr,y:H-4,'text-anchor':'end',class:'ax'},s1,'original (mg/L)');
+  var s2=$('#g-du2');clear(s2);s2.setAttribute('viewBox','0 0 '+W+' '+H);
+  var ym=Math.max(20,Math.ceil(Math.max.apply(null,rpd)/5)*5+5);
+  function by(v){return mt+(1-v/ym)*(H-mt-mb)}
+  for(t=0;t<=ym;t+=5){E('line',{x1:ml,x2:W-mr,y1:by(t),y2:by(t),class:'grid'},s2);E('text',{x:ml-6,y:by(t)+3.5,'text-anchor':'end',class:'ax'},s2,String(t))}
+  var bwid=(W-ml-mr)/rpd.length;
+  rpd.forEach(function(v,i){E('rect',{x:ml+i*bwid+1,y:by(v),width:bwid-2,height:by(0)-by(v),class:v>L?'bar-out':'bar-in'},s2)});
+  E('line',{x1:ml,x2:W-mr,y1:by(L),y2:by(L),class:'ln-bad'},s2);E('text',{x:W-mr,y:by(L)-5,'text-anchor':'end',class:'lbl-b'},s2,'límite '+L+'%');
+  E('text',{x:ml,y:10,class:'ax'},s2,'RPD %');E('text',{x:W-mr,y:H-4,'text-anchor':'end',class:'ax'},s2,'par (1 a 30)');
+  var fail=rpd.filter(function(v){return v>L}).length;
+  readout('#du-read',[['pares',String(o.length)],['RPD medio',f(mean(rpd),1)+'%'],['RPD máximo',f(Math.max.apply(null,rpd),1)+'%',Math.max.apply(null,rpd)>L?'v-bad':'v-ok'],['pares fuera de criterio',String(fail),fail?'v-bad':'v-ok']]);
+  $('#du-sig').textContent=fail?fail+' par(es) sobre el límite: revisar homogeneización y contaminación cruzada del lote.':'Todos los pares cumplen el criterio de aceptación.';
+}
+
+/* ---------- Gantt ---------- */
+var jobs=(function(){var r=rng(23),a=[];for(var i=0;i<14;i++)a.push({id:i+1,d:Math.round((1+r()*5.5)*2)/2});return a})();
+function sched(order,M){var free=[];for(var i=0;i<M;i++)free.push(0);var out=[];order.forEach(function(j){var k=0;for(var m=1;m<M;m++)if(free[m]<free[k])k=m;out.push({m:k,s:free[k],d:j.d,id:j.id});free[k]+=j.d});return {items:out,mk:Math.max.apply(null,free)}}
+var ganttMode='fifo';
+function renderGantt(){
+  var M=3,A=sched(jobs,M),B=sched(jobs.slice().sort(function(a,b){return b.d-a.d}),M),cur=ganttMode==='fifo'?A:B;
+  var svg=$('#f-gantt'),W=760,H=230,ml=64,mr=20,mt=20,mb=34,tmax=Math.ceil(Math.max(A.mk,B.mk)/2)*2+1;
+  clear(svg);svg.setAttribute('viewBox','0 0 '+W+' '+H);
+  function sx(t){return ml+t/tmax*(W-ml-mr)}var rh=(H-mt-mb)/M;
+  for(var t=0;t<=tmax;t+=2){E('line',{x1:sx(t),x2:sx(t),y1:mt,y2:H-mb,class:'grid'},svg);E('text',{x:sx(t),y:H-14,'text-anchor':'middle',class:'ax'},svg,String(t))}
+  E('text',{x:W-mr,y:H-2,'text-anchor':'end',class:'ax'},svg,'horas');
+  for(var m=0;m<M;m++)E('text',{x:ml-8,y:mt+m*rh+rh/2+4,'text-anchor':'end',class:'lbl'},svg,'Estación '+(m+1));
+  cur.items.forEach(function(it){var x=sx(it.s),w=sx(it.s+it.d)-x;E('rect',{x:x+.5,y:mt+it.m*rh+6,width:w-1,height:rh-12,fill:'hsl(187 '+(22+(it.id%4)*7)+'% '+(60+(it.id%3)*8)+'%)',stroke:'#0a5c66','stroke-width':.8},svg);if(w>16)E('text',{x:x+w/2,y:mt+it.m*rh+rh/2+4,'text-anchor':'middle',class:'t2'},svg,'L'+it.id)});
+  E('line',{x1:sx(cur.mk),x2:sx(cur.mk),y1:mt-8,y2:H-mb,class:'ln-bad'},svg);
+  E('text',{x:sx(cur.mk)-5,y:mt-8,'text-anchor':'end',class:'lbl-b'},svg,'término '+f(cur.mk,1)+' h');
+  var tot=jobs.reduce(function(s,j){return s+j.d},0),util=tot/(M*cur.mk)*100,gain=(A.mk-cur.mk)/A.mk*100;
+  readout('#gantt-read',[['tiempo total',f(cur.mk,1)+' h'],['uso de estaciones',f(util,0)+'%'],['mejora vs llegada',cur===A?'—':f(gain,0)+'%',cur===A?'':'v-ok']]);
+}
+$$('#gantt-seg button').forEach(function(b){b.addEventListener('click',function(){ganttMode=b.dataset.m;$$('#gantt-seg button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});renderGantt()})});
+
+/* ---------- diagramas de servicios ---------- */
+function flow(id,cols,h){
+  var svg=$(id),W=760,H=h||250;clear(svg);svg.setAttribute('viewBox','0 0 '+W+' '+H);
+  E('defs',{},svg).innerHTML='<marker id="ar'+id.slice(1)+'" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1L9 5L1 9z" fill="#132028"/></marker>';
+  var n=cols.length,gap=22,bw=(W-20-gap*(n-1))/n,y=30,bh=H-70;
+  cols.forEach(function(c,i){var x=10+i*(bw+gap);
+    E('rect',{x:x,y:y,width:bw,height:bh,class:c.acc?'box-a':'box'},svg);
+    E('text',{x:x+10,y:y+22,class:'t1'},svg,c.t);
+    c.l.forEach(function(s,k){E('text',{x:x+10,y:y+46+k*16,class:'t2'},svg,s)});
+    E('text',{x:x+10,y:y-8,class:'ax'},svg,String(i+1).padStart(2,'0'));
+    if(i<n-1)E('line',{x1:x+bw+2,y1:y+bh/2,x2:x+bw+gap-2,y2:y+bh/2,class:'conn','marker-end':'url(#ar'+id.slice(1)+')'},svg)});
+}
+function drawFlows(){
+  flow('#f-pipe',[
+    {t:'Origen',l:['Excel y PDF','Correo','LIMS','Cadenas']},
+    {t:'Extracción',l:['Lectura','Versión','Hash']},
+    {t:'Validación',l:['Rangos','Unidades','Duplicados','Códigos'],acc:1},
+    {t:'Normalización',l:['Analitos','Métodos','Muestras']},
+    {t:'Destino',l:['PostgreSQL','SQL Server','Oracle','Reportes']}],230);
+  flow('#f-inst',[
+    {t:'Instrumento',l:['Balanza','ICP-OES','AAS']},
+    {t:'Interfaz',l:['RS-232','USB-TTL','Archivo']},
+    {t:'Captura',l:['Estabilidad','Reintentos','Checksum'],acc:1},
+    {t:'Sistema',l:['LIMS','SAP','Citrix']},
+    {t:'Bitácora',l:['Fecha y hora','Equipo','Usuario']}],230);
+  /* esquema de BD */
+  var svg=$('#f-db'),W=760,H=300;clear(svg);svg.setAttribute('viewBox','0 0 '+W+' '+H);
+  var T=[
+   {n:'muestra',x:10,y:20,r:[['id','pk'],['codigo',''],['cadena_id','fk'],['fecha_ingreso','']]},
+   {n:'ensayo',x:200,y:20,r:[['id','pk'],['muestra_id','fk'],['metodo_id','fk'],['estado','']]},
+   {n:'resultado',x:390,y:20,r:[['id','pk'],['ensayo_id','fk'],['analito',''],['valor',''],['version','']]},
+   {n:'material_control',x:580,y:20,r:[['id','pk'],['codigo',''],['valor_cert',''],['incertidumbre','']]}];
+  T.forEach(function(t){var h=30+t.r.length*20;E('rect',{x:t.x,y:t.y,width:170,height:h,class:'box'},svg);E('rect',{x:t.x,y:t.y,width:170,height:26,class:'box-a'},svg);E('text',{x:t.x+10,y:t.y+18,class:'t1'},svg,t.n);
+    t.r.forEach(function(rw,k){E('text',{x:t.x+10,y:t.y+46+k*20,class:rw[1]?(rw[1]==='pk'?'t2 pk':'t2 fk'):'t2'},svg,(rw[1]?rw[1].toUpperCase()+'  ':'')+rw[0])})});
+  [[180,52,200,52],[370,52,390,52],[560,52,580,52]].forEach(function(l){E('line',{x1:l[0],y1:l[1],x2:l[2],y2:l[3],class:'conn'},svg)});
+  E('text',{x:10,y:200,class:'lbl'},svg,'Reglas del esquema');
+  ['La muestra nunca se borra: cambia de estado.','Cada corrección de un resultado crea una versión nueva.','Los materiales de control guardan certificado y vigencia.'].forEach(function(s,k){E('text',{x:10,y:222+k*18,class:'t2'},svg,'· '+s)});
+  /* informe */
+  var s3=$('#f-rep');clear(s3);s3.setAttribute('viewBox','0 0 760 330');
+  E('rect',{x:200,y:8,width:360,height:316,class:'box'},s3);
+  E('rect',{x:200,y:8,width:360,height:34,class:'box-a'},s3);
+  E('text',{x:214,y:30,class:'t1'},s3,'Informe de ensayo · Lote 2026-10');
+  E('text',{x:214,y:62,class:'t2'},s3,'Cliente · Proyecto · Método ICP-OES');
+  var pts=[],r=rng(4);for(var i=0;i<18;i++)pts.push(160-(r()-.5)*40-(i>13?14:0));
+  E('line',{x1:214,x2:546,y1:140,y2:140,class:'ln-cl'},s3);E('line',{x1:214,x2:546,y1:110,y2:110,class:'ln-bad'},s3);E('line',{x1:214,x2:546,y1:170,y2:170,class:'ln-bad'},s3);
+  E('path',{d:pts.map(function(v,i){return (i?'L':'M')+(214+i*19.5)+' '+(v-20)}).join(''),class:'ser'},s3);
+  E('text',{x:214,y:98,class:'ax'},s3,'Carta de control · material de referencia');
+  for(i=0;i<6;i++){var yy=200+i*18;E('line',{x1:214,x2:546,y1:yy+6,y2:yy+6,class:'grid'},s3);E('text',{x:214,y:yy,class:'t2'},s3,'M-00'+(40+i));E('text',{x:330,y:yy,class:'t2'},s3,['Cu','Fe','Mo','Cu','Fe','Mo'][i]);E('text',{x:420,y:yy,class:'t2'},s3,f(20+i*7.3,1)+' mg/L');E('text',{x:500,y:yy,class:'t2'},s3,'acepta')}
+  E('text',{x:214,y:314,class:'ax'},s3,'v3 · generado automáticamente · firma del jefe de laboratorio');
+}
+
+/* ---------- conexión de controles ---------- */
+['xr-zones','xr-drift'].forEach(function(i){$('#'+i).addEventListener('change',renderXR)});
+['lj-zones','lj-drift'].forEach(function(i){$('#'+i).addEventListener('change',renderLJ)});
+$('#ew-drift').addEventListener('change',renderEW);
+['cp-lsl','cp-usl','cp-sh'].forEach(function(i){$('#'+i).addEventListener('input',renderCP)});
+$('#du-lim').addEventListener('input',renderDU);$('#du-bad').addEventListener('change',renderDU);
+drawFlows();renderXR();renderLJ();renderEW();renderCP();renderDU();renderGantt();
+
+/* ---------- formulario ---------- */
+$('#contact-form').addEventListener('submit',function(e){
   e.preventDefault();
-  const btn = document.getElementById('submit-btn');
-  const msg = document.getElementById('form-msg');
-  btn.textContent = 'Enviando...';
-  btn.disabled = true;
-  const data = new FormData(this);
-  try {
-    const res = await fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      body: data
-    });
-    const json = await res.json();
-    if (json.success) {
-      btn.textContent = '✓ Mensaje enviado';
-      btn.style.background = '#22c55e';
-      btn.style.color = '#fff';
-      msg.textContent = 'Gracias por contactarnos. Te respondemos en menos de 48 horas.';
-      msg.style.color = '#22c55e';
-      msg.style.display = 'block';
-      this.reset();
-    } else {
-      throw new Error('Error');
-    }
-  } catch(err) {
-    btn.textContent = 'Enviar mensaje →';
-    btn.disabled = false;
-    msg.textContent = 'Hubo un error al enviar. Escríbenos directamente a psantiba@gmail.com';
-    msg.style.color = '#ef4444';
-    msg.style.display = 'block';
-  }
-});
-
-// SMOOTH SCROLL NAV
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    e.preventDefault();
-    document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:'smooth'});
+  var btn=$('#submit-btn'),msg=$('#form-msg'),form=this;
+  btn.textContent='Enviando...';btn.disabled=true;
+  fetch('https://api.web3forms.com/submit',{method:'POST',body:new FormData(form)}).then(function(r){return r.json()}).then(function(j){
+    if(!j.success)throw new Error('x');
+    btn.textContent='Mensaje enviado';
+    msg.textContent='Gracias por escribirnos. Respondemos en menos de 48 horas.';msg.style.color='var(--ok)';msg.style.display='block';form.reset();
+    setTimeout(function(){btn.textContent='Enviar mensaje';btn.disabled=false},4000);
+  }).catch(function(){
+    btn.textContent='Enviar mensaje';btn.disabled=false;
+    msg.textContent='No se pudo enviar. Escríbenos directamente a vprouteau@metquant.cl';msg.style.color='var(--bad)';msg.style.display='block';
   });
 });
+})();
 </script>
 </body>
 </html>
